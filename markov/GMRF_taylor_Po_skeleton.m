@@ -1,38 +1,35 @@
-function [logp, D_logp, D2_logp]= GMRF_taylor_Po(x_0, y, A, Q)
+function [f, df, d2f]= gmrf_taylor_Po(x_0, y, A, Q, mu)
 % GMRF_TAYLOR_PO_SKELETON  Taylor expansion of the conditional for non-Gaussian observations
 %
-% [logp, D_logp, D2_logp]= GMRF_taylor_Po(x_0, y, A, Q)
+% [f, df, d2f]= gmrf_taylor_Po(x_0, y, A, Q, mu)
 %
 % x_0 = value at which to compute taylor expansion
 % y = the data vector, as a column with n elements
 % A = the observation matrix, sparse n-by-N
 % Q = the precision matrix, sparse N-by-N
+% mu = the mean value vector
 %
 % Function should return taylor expansion, gradient and Hessian.
 %
-% This is only a skeleton for Home Assignment 2.
+% This is only a skeleton for Home Assignment 3.
 
-% $Id: GMRF_taylor_Po_skeleton.m 4792 2014-11-27 14:30:32Z johanl $
+% $Id: gmrf_taylor_Po_skeleton.m 4586 2012-10-08 16:18:33Z johanl $
 
 % Remove this line from your copy:
-error('This is only a skeleton function!  Copy it and fill in the blanks!')
+warning('This is only a skeleton function!  Copy it and fill in the blanks!')
 
-%compute log observations p(y|x)
-z = A*x_0;
-f = [];
-
-%compute log p(x|y,theta)
+%compute log observations
 logp = [];
 
-if nargout>1
-  %compute derivatives (if needed, i.e. nargout>1)
-  df = [];
-  D_logp = [] - A'*df;
-end
+%compute the function
+f = [];
 
-if nargout>2
-  %compute hessian (if needed, i.e. nargout>2)
-  d2f = [];
-  n = size(A,1);
-  D2_logp = [] - A'*spdiags(d2f,0,n,n)*A;
-end
+%compute derivatives (of log obs and function)
+d_logp = [];
+df = [];
+
+%compute hessian
+d2_logp = [];
+n = size(Q,1);
+d2f = Q - spdiags(A'*d2_logp,0,n,n);
+
