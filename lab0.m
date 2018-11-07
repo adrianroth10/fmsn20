@@ -64,11 +64,11 @@ for i = 1:5:25
   figure
   hold on
   plot(t, Y, 'b', t2, X*beta, 'r');
-  xlim([t(1), t(end)])
   datetick
   plot(t2, future, 'g')
   plot(t2, upper, 'c')
   plot(t2, lower, 'c')
+  xlim([t(1), t(end)])
   pause
   varsum = varsum + alpha^(2*i);
 end
