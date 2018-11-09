@@ -20,19 +20,24 @@ kappa = 0.1;
 nu = 1;
 mu = 0;
 
-sz = [50 52];
+sz = [3 2];
 N = prod(sz);
-[Y, X] = meshgrid(0:sz(1) - 1, 0:sz(2) - 1);
-X = [X(:), Y(:)]';
 
-d = zeros(N, N);
-for i = 0:N - 1
-    x0 = [mod(i, sz(2)); floor(i / sz(2))];
-    x = X - x0;
-    d0 = sqrt(sum(x.^2));
-    d(:, i + 1) = d0;
-end
-Sigma = matern_covariance(d, sigma2, kappa, nu);
+% Alternative way of calculating distance matrix
+% [Y, X] = meshgrid(0:sz(1) - 1, 0:sz(2) - 1);
+% X = X';
+% Y = Y';
+% X = [X(:), Y(:)]';
+% D = zeros(N, N);
+% for i = 0:N - 1
+%     x0 = [floor(i / sz(1)); mod(i, sz(1))];
+%     x = X - x0;
+%     d0 = sqrt(sum(x.^2));
+%     D(:, i + 1) = d0;
+% end
+[u1,u2] = ndgrid(1:sz(1),1:sz(2));
+D = distance_matrix([u1(:), u2(:)]);
+Sigma = matern_covariance(D, sigma2, kappa, nu);
 disp 'Sigma calculated';
 
 R = chol(Sigma + eye(size(Sigma)) * 1e-5); % Calculate the Cholesky factorisation
