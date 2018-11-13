@@ -1,16 +1,16 @@
 %% 1.
 
-% dist = 0:80;
-% sigma2 = 1;
-% kappa = 0.1;
-% nu = 2;
-% r = matern_covariance(dist, sigma2, kappa, nu);
-% rho_c = 2;
-% x = 1;
-% r = cauchy_covariance(dist, sigma2,rho_c,x);
-% r = spherical_covariance(linspace(0,0.73*rho_c,50*60), sigma2,rho_c);
-% plot(dist, r)
-% return
+dist = 0:80;
+sigma2 = 1;
+kappa = 0.1;
+nu = 2;
+%r = matern_covariance(dist, sigma2, kappa, nu);
+rho_c = 2;
+x = 1;
+r = cauchy_covariance(dist, sigma2,rho_c,x);
+%r = spherical_covariance(linspace(0,0.73*rho_c,50*60), sigma2,rho_c);
+plot(dist, r)
+return
 
 %% 2.
 % First use matern_covariance to create a Sigma-covariance matrix.
@@ -49,7 +49,7 @@ eta_image = reshape(eta,sz); %reshape the column to an image
 sigma2_epsilon = 1;
 y=eta+randn(N,1)*sigma2_epsilon;
 z=y-mu; 
-%plot(D,z*z','.k')
+plot(D,z*z','.k')
 %hold on 
 d2 = linspace(0, max(D(:)));
 figure(2)

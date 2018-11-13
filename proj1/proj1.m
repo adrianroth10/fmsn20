@@ -8,13 +8,18 @@ Yvalid = swissRain(swissRain(:,5)==1,:);
 
 sz = size(swissElevation);
 n = size(Y, 1);
+%X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
+% X depending on Y
 X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
 y = Y(:, 1);
 
 % Estimation of second degree polynomial for regression term
 beta = (X' * X) \ X' * y;
-% plot(Y(:, 2), Y(:, 1) - X * beta, '*')
+%imagesc(reshape(X*beta, size(X*beta)))
+%plot(Y(:, 4), Y(:, 1), '*')
 z = y - X * beta;
+for i = 1:100
+z = z(randperm(length(z)));
 
 % Estimating covariance matrix/field
 D = distance_matrix([Y(:, 3), Y(:, 4)]);
@@ -25,7 +30,7 @@ Kmax = 50;
 Dmax = max(D(:));
 [rhat, s2hat, m, n, d] = covest_nonparametric(D, z, Kmax, Dmax);
 par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
-
+end
 % Refinement step
 Sigma = matern_covariance(D, par(1), par(2), par(3));
 beta_refined = (X' / Sigma * X) \ X' / Sigma * y;
@@ -65,5 +70,15 @@ y_rec(~I_obs) = X_u * beta_refined + Sigma_uk / Sigma_kk * (y_k - X_k * beta_ref
 
 rain_rec = nan(sz);
 rain_rec(notnanim) = y_rec((size(Y, 1) + size(Yvalid, 1) + 1):end);
-imagesc(rain_rec)
-axis xy tight; hold off; colorbar
+imagesc([0 max(swissX(:))], [0 max(swissY(:))], rain_rec, ...
+        'alphadata', ~isnan(rain_rec))
+hold on
+plot(swissBorder(:,1), swissBorder(:,2),'k')
+scatter(Y(:,3), Y(:,4), 20, Y(:,1), 'filled','markeredgecolor','r')
+scatter(Yvalid(:,3), Yvalid(:,4), 20, Yvalid(:,1), 'filled','markeredgecolor','g')
+xlabel('X-distance (km)');
+ylabel('Y-distance (km)');
+c = colorbar;
+axis xy tight; hold off; c; ylabel(c, 'Rain (mm)');
+
+
