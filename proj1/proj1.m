@@ -5,32 +5,53 @@ notnanim = ~isnan(swissX);
 swissGrid = swissGrid( ~isnan(swissGrid(:,1)),:);
 Y = swissRain(swissRain(:,5)==0,:);
 Yvalid = swissRain(swissRain(:,5)==1,:);
-
+D = distance_matrix([Y(:, 3), Y(:, 4)]);
 sz = size(swissElevation);
 n = size(Y, 1);
-%X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
-% X depending on Y
-X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
-y = Y(:, 1);
+y = sqrt(Y(:, 1));
 
 % Estimation of second degree polynomial for regression term
+% X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
+% X depending on Y
+X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
+
 beta = (X' * X) \ X' * y;
 %imagesc(reshape(X*beta, size(X*beta)))
 %plot(Y(:, 4), Y(:, 1), '*')
 z = y - X * beta;
-for i = 1:100
-z = z(randperm(length(z)));
+
+% Is the dependece significant?
+Dmax = max(D(:));
+Kmax = 50;
+[rhat, s2hat, m, n, d] = covest_nonparametric(D, z, Kmax, Dmax);
+N_boot = 100;
+rhats = nan(length(rhat), N_boot);
+for i = 1:N_boot
+  z2 = z(randperm(length(z)));
+  [rhat_temp, ~, ~, ~, ~] = covest_nonparametric(D, z2, Kmax, Dmax);
+  rhats(:, i) = rhat_temp;
+end
+rhats_sorted = sort(rhats, 2);
+boot_min = rhats_sorted(:, 5);
+boot_max = rhats_sorted(:, 95);
+figure();
+hold on;
+plot(d, boot_min, '--r')
+plot(d, boot_max, '--r')
+plot(d, rhat, 'b')
+return
+
 
 % Estimating covariance matrix/field
-D = distance_matrix([Y(:, 3), Y(:, 4)]);
-
 covf = 'matern';
-par_fixed = [0, 0, 0.9, 0];
-Kmax = 50;
-Dmax = max(D(:));
-[rhat, s2hat, m, n, d] = covest_nonparametric(D, z, Kmax, Dmax);
+par_fixed = [0, 0, 20, 0];
 par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
-end
+
+plot(d, rhat, 'b');
+hold on
+plot(d, matern_covariance(d, par(1), par(2), par(3)));
+return
+
 % Refinement step
 Sigma = matern_covariance(D, par(1), par(2), par(3));
 beta_refined = (X' / Sigma * X) \ X' / Sigma * y;
