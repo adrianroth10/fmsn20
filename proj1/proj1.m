@@ -11,14 +11,20 @@ n = size(Y, 1);
 y = sqrt(Y(:, 1));
 
 % Estimation of second degree polynomial for regression term
-% X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
-% X depending on Y
-X = [ones(n, 1), Y(:, 2), Y(:, 2).^2];
-
+X = [ones(length(y), 1), Y(:, 2), Y(:, 2).^2];
 beta = (X' * X) \ X' * y;
-%imagesc(reshape(X*beta, size(X*beta)))
-%plot(Y(:, 4), Y(:, 1), '*')
 z = y - X * beta;
+s2 = var(z);
+beta_var = s2 * diag(inv((X' * X)));
+beta_confidence_interval = [beta - 1.96 * sqrt(beta_var), beta + 1.96 * sqrt(beta_var)]
+% figure
+% hold on
+% lin_x = linspace(min(Y(:, 2)), max(Y(:, 2)));
+% plot(Y(:, 2), y, 'b*')
+% plot(lin_x, polyval(flip(beta'), lin_x), 'r')
+% xlabel('Elevation (km)')
+% ylabel('$\sqrt{\textnormal{precipitation}}$ ($\sqrt{\textnormal{mm}}$)', 'interpreter', 'latex')
+% legend('Raw data', 'Elevation polynomial estimation')
 
 % Is the dependece significant?
 Dmax = max(D(:));
@@ -34,17 +40,16 @@ end
 rhats_sorted = sort(rhats, 2);
 boot_min = rhats_sorted(:, 5);
 boot_max = rhats_sorted(:, 95);
-figure();
-hold on;
-plot(d, boot_min, '--r')
-plot(d, boot_max, '--r')
-plot(d, rhat, 'b')
-return
+% figure();
+% hold on;
+% plot(d, boot_min, '--r')
+% plot(d, boot_max, '--r')
+% plot(d, rhat, 'b')
 
 
 % Estimating covariance matrix/field
 covf = 'matern';
-par_fixed = [0, 0, 20, 0];
+par_fixed = [0, 0, 5, 0];
 par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
 
 plot(d, rhat, 'b');
@@ -56,8 +61,12 @@ return
 Sigma = matern_covariance(D, par(1), par(2), par(3));
 beta_refined = (X' / Sigma * X) \ X' / Sigma * y;
 z_refined = y - X * beta_refined;
+s2_refined = var(z_refined);
+beta_refined_var = s2_refined * diag(inv((X' / Sigma * X)));
+beta_refined_confidence_interval = [beta_refined - 1.96 * sqrt(beta_refined_var), beta_refined + 1.96 * sqrt(beta_refined_var)]
 [rhat, s2hat, m, n, d] = covest_nonparametric(D, z_refined, Kmax, Dmax);
 par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
+return
 
 % plot(d, rhat, 'b');
 % hold on
