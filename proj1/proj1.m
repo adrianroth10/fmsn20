@@ -71,6 +71,7 @@ par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
 % plot(d, matern_covariance(d, par(1), par(2), par(3)));
 
 % Interpolation
+I_valid = logical([zeros(size(Y, 1), 1); ones(size(Yvalid, 1), 1); zeros(size(swissGrid, 1), 1)]);
 I_obs = logical([ones(size(Y, 1), 1); zeros(size(Yvalid, 1), 1); zeros(size(swissGrid, 1), 1)]);
 coords_all = [Y(:, 3:4); Yvalid(:, 3:4); swissGrid(:, 2:3)];
 elev_all = [Y(:, 2); Yvalid(:, 2); swissGrid(:, 1)];
@@ -96,6 +97,8 @@ y_rec(I_obs) = y;
 y_rec(~I_obs) = X_u * beta_refined + Sigma_uk / Sigma_kk * (y_k - X_k * beta_refined);
 y_rec(y_rec < 0) = 0;
 y_rec = y_rec.^2;
+
+validation_rms_error = sqrt(mean((y_rec(I_valid) - Yvalid(:, 1)).^2))
 
 rain_rec = nan(sz);
 rain_rec(notnanim) = y_rec((size(Y, 1) + size(Yvalid, 1) + 1):end);
