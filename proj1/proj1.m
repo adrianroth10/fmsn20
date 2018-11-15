@@ -22,7 +22,7 @@ beta_confidence_interval = [beta - 1.96 * sqrt(beta_var), beta + 1.96 * sqrt(bet
 % lin_x = linspace(min(Y(:, 2)), max(Y(:, 2)));
 % plot(Y(:, 2), y, 'b*')
 % plot(lin_x, polyval(flip(beta'), lin_x), 'r')
-% xlabel('Elevation (km)')
+% xlabel('Elevation (km)', 'interpreter', 'latex')
 % ylabel('$\sqrt{\textnormal{precipitation}}$ ($\sqrt{\textnormal{mm}}$)', 'interpreter', 'latex')
 % legend('Raw data', 'Elevation polynomial estimation')
 
@@ -49,13 +49,12 @@ boot_max = rhats_sorted(:, 95);
 
 % Estimating covariance matrix/field
 covf = 'matern';
-par_fixed = [0, 0, 5, 0];
+par_fixed = [0, 0, 2, 0];
 par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
 
-plot(d, rhat, 'b');
-hold on
-plot(d, matern_covariance(d, par(1), par(2), par(3)));
-return
+% plot(d, rhat, 'b');
+% hold on
+% plot(d, matern_covariance(d, par(1), par(2), par(3)));
 
 % Refinement step
 Sigma = matern_covariance(D, par(1), par(2), par(3));
@@ -66,7 +65,6 @@ beta_refined_var = s2_refined * diag(inv((X' / Sigma * X)));
 beta_refined_confidence_interval = [beta_refined - 1.96 * sqrt(beta_refined_var), beta_refined + 1.96 * sqrt(beta_refined_var)]
 [rhat, s2hat, m, n, d] = covest_nonparametric(D, z_refined, Kmax, Dmax);
 par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
-return
 
 % plot(d, rhat, 'b');
 % hold on
@@ -76,7 +74,6 @@ return
 I_obs = logical([ones(size(Y, 1), 1); zeros(size(Yvalid, 1), 1); zeros(size(swissGrid, 1), 1)]);
 coords_all = [Y(:, 3:4); Yvalid(:, 3:4); swissGrid(:, 2:3)];
 elev_all = [Y(:, 2); Yvalid(:, 2); swissGrid(:, 1)];
-
 
 D_all = distance_matrix(coords_all);
 Sigma_all = matern_covariance(D_all, par(1), par(2), par(3));
@@ -95,8 +92,10 @@ X_k = elev_all(I_obs, :);
 X_k = [ones(size(X_k, 1), 1), X_k, X_k.^2];
 
 y_rec = nan(size(I_obs));
-y_rec(I_obs) = Y(:, 1);
+y_rec(I_obs) = y;
 y_rec(~I_obs) = X_u * beta_refined + Sigma_uk / Sigma_kk * (y_k - X_k * beta_refined);
+y_rec(y_rec < 0) = 0;
+y_rec = y_rec.^2;
 
 rain_rec = nan(sz);
 rain_rec(notnanim) = y_rec((size(Y, 1) + size(Yvalid, 1) + 1):end);
@@ -110,5 +109,3 @@ xlabel('X-distance (km)');
 ylabel('Y-distance (km)');
 c = colorbar;
 axis xy tight; hold off; c; ylabel(c, 'Rain (mm)');
-
-
