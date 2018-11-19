@@ -1,34 +1,37 @@
+%% Initializing values
 load swissRainfall.mat
-
 swissGrid = [swissElevation(:) swissX(:) swissY(:)];
-notnanim = ~isnan(swissX);
+notnanim = ~isnan(swissX);  
 swissGrid = swissGrid( ~isnan(swissGrid(:,1)),:);
 Y = swissRain(swissRain(:,5)==0,:);
 Yvalid = swissRain(swissRain(:,5)==1,:);
 D = distance_matrix([Y(:, 3), Y(:, 4)]);
 sz = size(swissElevation);
 n = size(Y, 1);
-y = log(Y(:, 1)+1);
-%y = sqrt(Y(:, 1));
+
+% Ways to choose y
+%y = log(Y(:, 1)+1);
+y = sqrt(Y(:, 1));
 
 
-% Estimation of second degree polynomial for regression term
+%% Estimation of second degree polynomial for regression term
 X = [ones(length(y), 1), Y(:, 2), Y(:, 2).^2];
 beta = (X' * X) \ X' * y;
 z = y - X * beta;
 s2 = var(z);
 beta_var = s2 * diag(inv((X' * X)));
 beta_confidence_interval = [beta - 1.96 * sqrt(beta_var), beta + 1.96 * sqrt(beta_var)]
-% figure
-% hold on
-% lin_x = linspace(min(Y(:, 2)), max(Y(:, 2)));
-% plot(Y(:, 2), y, 'b*')
-% plot(lin_x, polyval(flip(beta'), lin_x), 'r')
-% xlabel('Elevation (km)', 'interpreter', 'latex')
-% ylabel('$\sqrt{\textnormal{precipitation}}$ ($\sqrt{\textnormal{mm}}$)', 'interpreter', 'latex')
-% legend('Raw data', 'Elevation polynomial estimation')
 
-% Is the covariance significant?
+figure
+hold on
+lin_x = linspace(min(Y(:, 2)), max(Y(:, 2)));
+plot(Y(:, 2), y, 'b*')
+plot(lin_x, polyval(flip(beta'), lin_x), 'r')
+xlabel('Elevation (km)', 'interpreter', 'latex')
+ylabel('$\sqrt{\textnormal{precipitation}}$ ($\sqrt{\textnormal{mm}}$)', 'interpreter', 'latex')
+legend('Raw data', 'Elevation polynomial estimation')
+
+%% Is the covariance significant?
 Dmax = max(D(:));
 Kmax = 50;
 [rhat, s2hat, m, n, d] = covest_nonparametric(D, z, Kmax, Dmax);
@@ -42,27 +45,42 @@ end
 rhats_sorted = sort(rhats, 2);
 boot_min = rhats_sorted(:, 5);
 boot_max = rhats_sorted(:, 95);
-% figure();
-% hold on;
-% xlabel('Distance (km)')
-% ylabel('Covariance')
-% plot(d, boot_min, '--r')
-% plot(d, boot_max, '--r')
-% plot(d, rhat, 'b')
-% return
 
-% Estimating covariance matrix/field
+
+figure();
+hold on;
+xlabel('Distance (km)')
+ylabel('Covariance')
+plot(d, boot_min, '--r')
+plot(d, boot_max, '--r')
+plot(d, rhat, 'b')
+
+%% Estimating covariance matrix/field
 covf = 'matern';
 par_fixed = [0, 0, 0, 0];
 %par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
 [par, beta_refined] = covest_ml(D, y, covf, par_fixed, X);
 %par = covest_ml(D, y, covf, par_fixed, X, 'reml', );
 
+% [par1, beta_refined1] = covest_ml(D, y, 'exponential', par_fixed, X);
+% [par2, beta_refined2] = covest_ml(D, y, 'matern', [0,0,0,0], X);
+% [par3, beta_refined3] = covest_ml(D, y, 'cauchy', [0,0,0,0], X);
+% [par4, beta_refined4] = covest_ml(D, y, 'spherical', [0,0,0], X);
+
 plot(d, rhat, 'b');
 hold on
-plot(d, matern_covariance(d, par(1), par(2), par(3)));
+plot(d, matern_covariance(d, par(1), par(2),par(3)),'r');
+% hold on
+% plot(d, exponential_covariance(d, par1(1), par1(2)),'g');
+% hold on
+% plot(d, matern_covariance(d, par2(1), par2(2),par2(3)),':');
+% hold on
+% plot(d, cauchy_covariance(d, par3(1), par3(2), par3(3)),'b --');
+% hold on
+% plot(d, spherical_covariance(d, par4(1), par4(2)),'g -.');
 
-% Refinement step
+
+%% Refinement step
 Sigma = matern_covariance(D, par(1), par(2), par(3));
 %beta_refined = (X' / Sigma * X) \ X' /  Sigma * y;
 z_refined = y - X * beta_refined;
@@ -72,11 +90,11 @@ beta_refined_confidence_interval = [beta_refined - 1.96 * sqrt(beta_refined_var)
 [rhat, s2hat, m, n, d] = covest_nonparametric(D, z_refined, Kmax, Dmax);
 par = covest_ls(rhat, s2hat, m, n, d, covf, par_fixed);
 
-% plot(d, rhat, 'b');
-% hold on
-% plot(d, matern_covariance(d, par(1), par(2), par(3)));
+plot(d, rhat, 'b');
+hold on
+plot(d, matern_covariance(d, par(1), par(2), par(3)));
 
-% Interpolation
+%% Interpolation
 I_valid = logical([zeros(size(Y, 1), 1); ones(size(Yvalid, 1), 1); zeros(size(swissGrid, 1), 1)]);
 I_obs = logical([ones(size(Y, 1), 1); zeros(size(Yvalid, 1), 1); zeros(size(swissGrid, 1), 1)]);
 coords_all = [Y(:, 3:4); Yvalid(:, 3:4); swissGrid(:, 2:3)];
