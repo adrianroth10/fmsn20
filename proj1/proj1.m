@@ -1,7 +1,7 @@
 %% Initializing values
 load swissRainfall.mat
 swissGrid = [swissElevation(:) swissX(:) swissY(:)];
-notnanim = ~isnan(swissX);  
+notnanim = ~isnan(swissX);
 swissGrid = swissGrid( ~isnan(swissGrid(:,1)),:);
 Y = swissRain(swissRain(:,5)==0,:);
 Y_valid = swissRain(swissRain(:,5)==1,:);
@@ -120,13 +120,13 @@ plot(d, rhat, 'b')
 % Estimating covariance matrix/field
 covf = 'matern';
 par_fixed = [0, 0, 0, 0];
-[par, beta_refined] = covest_ml(D, y, covf, par_fixed, X);
+[par, beta_ml] = covest_ml(D, y, covf, par_fixed, X);
 %par = covest_ml(D, y, covf, par_fixed, X, 'reml', );
 
-% [par1, beta_refined1] = covest_ml(D, y, 'exponential', par_fixed, X);
-% [par2, beta_refined2] = covest_ml(D, y, 'matern', [0,0,0,0], X);
-% [par3, beta_refined3] = covest_ml(D, y, 'cauchy', [0,0,0,0], X);
-% [par4, beta_refined4] = covest_ml(D, y, 'spherical', [0,0,0], X);
+% [par1, beta_ml1] = covest_ml(D, y, 'exponential', par_fixed, X);
+% [par2, beta_ml2] = covest_ml(D, y, 'matern', [0,0,0,0], X);
+% [par3, beta_ml3] = covest_ml(D, y, 'cauchy', [0,0,0,0], X);
+% [par4, beta_ml4] = covest_ml(D, y, 'spherical', [0,0,0], X);
 
 plot(d, rhat, 'b');
 hold on
@@ -141,11 +141,11 @@ plot(d, matern_covariance(d, par(1), par(2),par(3)),'r');
 % plot(d, spherical_covariance(d, par4(1), par4(2)),'g -.');
 
 
-% Beta refined significance
+% Beta ml significance
 Sigma = matern_covariance(D, par(1), par(2), par(3));
-beta_refined_var = inv((X' / Sigma * X));
-beta_refined_confidence_interval = [beta_refined - 1.96 * sqrt(diag(beta_refined_var)),...
-                                    beta_refined + 1.96 * sqrt(diag(beta_refined_var))];
+beta_ml_var = inv((X' / Sigma * X));
+beta_ml_confidence_interval = [beta_ml - 1.96 * sqrt(diag(beta_ml_var)),...
+                                    beta_ml + 1.96 * sqrt(diag(beta_ml_var))];
 
 %% Interpolation
 Sigma_all = matern_covariance(D_all, par(1), par(2), par(3));
@@ -159,7 +159,7 @@ y_k = y;
 
 y_rec_cov = nan(size(I_obs));
 y_rec_cov(I_obs) = y_k;
-y_rec_cov(~I_obs) = X_u * beta_refined + Sigma_uk / Sigma_kk * (y_k - X_k * beta_refined);
+y_rec_cov(~I_obs) = X_u * beta_ml + Sigma_uk / Sigma_kk * (y_k - X_k * beta_ml);
 y_rec_cov(y_rec_cov < 0) = 0;
 if strcmp(transform, 'sqrt')
   y_rec_cov = y_rec_cov.^2;
@@ -168,7 +168,7 @@ elseif strcmp(transform, 'log')
 end
 V_cov_1 = diag(Sigma_uu) - sum((Sigma_uk / Sigma_kk) .* Sigma_uk, 2);
 quad_coeff = (X_u' - X_k' / Sigma_kk * Sigma_uk');
-V_cov_2 = sum((quad_coeff' * beta_refined_var) .* quad_coeff', 2);
+V_cov_2 = sum((quad_coeff' * beta_ml_var) .* quad_coeff', 2);
 V_cov = V_cov_1 + V_cov_2;
 
 cov_validation_rms_error = sqrt(mean(V_cov(I_valid) .* (y_rec_cov(I_valid) - Y_valid(:, 1)).^2))
