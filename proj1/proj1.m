@@ -36,7 +36,7 @@ beta = (X' * X) \ X' * y;
 
 % Beta significance
 z = y - X * beta;
-s2 = var(z);
+s2 = sum(z.^2) / (length(z) - length(beta));
 beta_var = s2 * inv((X' * X));
 beta_confidence_interval = [beta - 1.96 * sqrt(diag(beta_var)), beta + 1.96 * sqrt(diag(beta_var))];
 
