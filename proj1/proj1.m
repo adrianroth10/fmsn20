@@ -1,10 +1,18 @@
 %% Initializing values
 load swissRainfall.mat
-swissGrid = [swissElevation(:) swissX(:) swissY(:)];
-notnanim = ~isnan(swissX);
-swissGrid = swissGrid( ~isnan(swissGrid(:,1)),:);
-Y = swissRain(swissRain(:,5)==0,:);
-Y_valid = swissRain(swissRain(:,5)==1,:);
+grid = [swissElevation(:) swissX(:) swissY(:)];
+rain = swissRain;
+border = swissBorder;
+
+% load skaneRainfall.mat
+% grid = [skaneElevation(:) skaneX(:) skaneY(:)];
+% rain = skaneRain;
+% border = skaneBorder;
+
+notnanim = ~isnan(grid(:, 1));
+grid = grid(notnanim,:);
+Y = rain(rain(:,5)==0,:);
+Y_valid = rain(rain(:,5)==1,:);
 D = distance_matrix([Y(:, 3), Y(:, 4)]);
 sz = size(swissElevation);
 n = size(Y, 1);
@@ -15,12 +23,13 @@ if strcmp(transform, 'sqrt')
 elseif strcmp(transform, 'log')
   y = log(Y(:, 1)+1);
 end
+y_k = y;
 
 
-I_valid = logical([zeros(size(Y, 1), 1); ones(size(Y_valid, 1), 1); zeros(size(swissGrid, 1), 1)]);
-I_obs = logical([ones(size(Y, 1), 1); zeros(size(Y_valid, 1), 1); zeros(size(swissGrid, 1), 1)]);
-coords_all = [Y(:, 3:4); Y_valid(:, 3:4); swissGrid(:, 2:3)];
-elev_all = [Y(:, 2); Y_valid(:, 2); swissGrid(:, 1)];
+I_valid = logical([zeros(size(Y, 1), 1); ones(size(Y_valid, 1), 1); zeros(size(grid, 1), 1)]);
+I_obs = logical([ones(size(Y, 1), 1); zeros(size(Y_valid, 1), 1); zeros(size(grid, 1), 1)]);
+coords_all = [Y(:, 3:4); Y_valid(:, 3:4); grid(:, 2:3)];
+elev_all = [Y(:, 2); Y_valid(:, 2); grid(:, 1)];
 
 X_u = elev_all(~I_obs, :);
 X_u = [ones(size(X_u, 1), 1), X_u, X_u.^2];
@@ -40,14 +49,14 @@ s2 = sum(z.^2) / (length(z) - length(beta));
 beta_var = s2 * inv((X' * X));
 beta_confidence_interval = [beta - 1.96 * sqrt(diag(beta_var)), beta + 1.96 * sqrt(diag(beta_var))];
 
-figure()
-hold on
-lin_x = linspace(min(Y(:, 2)), max(Y(:, 2)));
-plot(Y(:, 2), y, 'b*')
-plot(lin_x, polyval(flip(beta'), lin_x), 'r')
-xlabel('Elevation (km)', 'interpreter', 'latex')
-ylabel('$\sqrt{\textnormal{precipitation}}$ ($\sqrt{\textnormal{mm}}$)', 'interpreter', 'latex')
-legend('Raw data', 'Elevation polynomial estimation')
+% figure()
+% hold on
+% lin_x = linspace(min(Y(:, 2)), max(Y(:, 2)));
+% plot(Y(:, 2), y, 'b*')
+% plot(lin_x, polyval(flip(beta'), lin_x), 'r')
+% xlabel('Elevation (km)', 'interpreter', 'latex')
+% ylabel('$\sqrt{\textnormal{precipitation}}$ ($\sqrt{\textnormal{mm}}$)', 'interpreter', 'latex')
+% legend('Raw data', 'Elevation polynomial estimation')
 
 
 % Interpolation
@@ -71,7 +80,7 @@ figure()
 hold on
 imagesc([0 max(swissX(:))], [0 max(swissY(:))], rain_rec_reg, ...
         'alphadata', ~isnan(rain_rec_reg))
-plot(swissBorder(:,1), swissBorder(:,2),'k')
+plot(border(:,1), border(:,2),'k')
 scatter(Y(:,3), Y(:,4), 20, Y(:,1), 'filled','markeredgecolor','r')
 scatter(Y_valid(:,3), Y_valid(:,4), 20, Y_valid(:,1), 'filled','markeredgecolor','g')
 xlabel('X-distance (km)');
@@ -107,13 +116,13 @@ rhats_sorted = sort(rhats, 2);
 boot_min = rhats_sorted(:, 5);
 boot_max = rhats_sorted(:, 95);
 
-figure();
-hold on;
-xlabel('Distance (km)')
-ylabel('Covariance')
-plot(d, boot_min, '--r')
-plot(d, boot_max, '--r')
-plot(d, rhat, 'b')
+% figure();
+% hold on;
+% xlabel('Distance (km)')
+% ylabel('Covariance')
+% plot(d, boot_min, '--r')
+% plot(d, boot_max, '--r')
+% plot(d, rhat, 'b')
 
 %% Interpolation using both regression and covariance
 
@@ -155,7 +164,6 @@ Sigma_yy = Sigma_all + sigma2_epsilon * eye(size(Sigma_all));
 Sigma_uu = Sigma_yy(~I_obs, ~I_obs);
 Sigma_uk = Sigma_yy(~I_obs, I_obs);
 Sigma_kk = Sigma_yy(I_obs, I_obs);
-y_k = y;
 
 y_rec_cov = nan(size(I_obs));
 y_rec_cov(I_obs) = y_k;
@@ -181,7 +189,7 @@ figure()
 hold on
 imagesc([0 max(swissX(:))], [0 max(swissY(:))], rain_rec_cov, ...
         'alphadata', ~isnan(rain_rec_cov))
-plot(swissBorder(:,1), swissBorder(:,2),'k')
+plot(border(:,1), border(:,2),'k')
 scatter(Y(:,3), Y(:,4), 20, Y(:,1), 'filled','markeredgecolor','r')
 scatter(Y_valid(:,3), Y_valid(:,4), 20, Y_valid(:,1), 'filled','markeredgecolor','g')
 xlabel('X-distance (km)');
