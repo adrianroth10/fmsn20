@@ -51,11 +51,12 @@ skaneBorder(:, 1) = skaneBorder(:, 1) * width_scale + width_const;
 skaneBorder(:, 2) = skaneBorder(:, 2) * height_scale + height_const;
 
 notnanim = imfill(im_border_orig, 'holes');
-% imagesc(notnanim)
+% notnanim =
 
 [X, Y] = meshgrid(1:s(1), 1:s(2));
-X = X * width_scale + width_const;
-Y = Y * height_scale + height_const;
+X = X * width_scale * 1.06 + width_const - 0.04;
+Y = Y * height_scale * 1.06 + height_const - 0.03;
+% small time tweaking for perfection
 
 skaneElevation = nan(s);
 skaneElevation(notnanim) = 0; % skåne is flat
@@ -78,6 +79,10 @@ skaneRain(:, 5) = randperm(n_points) <= 8;
 save('proj1/skaneRainfall.mat', 'skaneRain', 'skaneElevation', 'skaneX', 'skaneY', 'skaneBorder');
 
 %% Testplot
+I_valid = skaneRain(:, 5) == 1;
 figure(); hold on;
-plot(skaneBorder(:, 1), skaneBorder(:, 2))
-plot(skaneRain(:, 3), skaneRain(:, 4), 'o')
+imagesc([min(skaneX(:)) max(skaneX(:))], [min(skaneY(:)) max(skaneY(:))], skaneElevation, ...
+        'alphadata', ~isnan(skaneElevation))
+plot(skaneBorder(:,1), skaneBorder(:,2),'k')
+scatter(skaneRain(~I_valid, 3), skaneRain(~I_valid, 4), 20, skaneRain(~I_valid, 1), 'filled','markeredgecolor','r')
+scatter(skaneRain(I_valid, 3), skaneRain(I_valid, 4), 20, skaneRain(I_valid, 1), 'filled','markeredgecolor','g')

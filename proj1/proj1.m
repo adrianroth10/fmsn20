@@ -4,12 +4,14 @@ elevation = swissElevation;
 grid = [swissElevation(:) swissX(:) swissY(:)];
 rain = swissRain;
 border = swissBorder;
+skane = false;
 
 % load skaneRainfall.mat
 % elevation = skaneElevation;
 % grid = [skaneElevation(:) skaneX(:) skaneY(:)];
 % rain = skaneRain;
 % border = skaneBorder;
+% skane = true;
 
 notnanim = ~isnan(grid(:, 1));
 grid = grid(notnanim,:);
@@ -34,7 +36,9 @@ coords_all = [Y(:, 3:4); Y_valid(:, 3:4); grid(:, 2:3)];
 elev_all = [Y(:, 2); Y_valid(:, 2); grid(:, 1)];
 
 X = [ones(length(elev_all), 1), elev_all, elev_all.^2];
-% X = X(:, 1); % skåne is flat
+if skane
+  X = X(:, 1); % skåne is flat
+end
 
 X_u = X(~I_obs, :);
 X_k = X( I_obs, :);
