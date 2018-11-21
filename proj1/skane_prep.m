@@ -46,16 +46,14 @@ width_const = 14.57 - width_scale * max(r_all);
 height_scale = (56.52 - 55.34) / (max(c_all) - min(c_all));
 height_const = 56.52 - height_scale * max(c_all);
 
-coords(:, 1) = coords(:, 1) * height_scale + height_const;
-coords(:, 2) = coords(:, 2) * width_scale + width_const;
-coords = fliplr(coords);
-skaneBorder = coords;
-% plot(coords(:, 1), coords(:, 2))
+skaneBorder = fliplr(coords);
+skaneBorder(:, 1) = skaneBorder(:, 1) * width_scale + width_const;
+skaneBorder(:, 2) = skaneBorder(:, 2) * height_scale + height_const;
 
 notnanim = imfill(im_border_orig, 'holes');
 % imagesc(notnanim)
 
-[X, Y] = meshgrid(1:200, 1:200);
+[X, Y] = meshgrid(1:s(1), 1:s(2));
 X = X * width_scale + width_const;
 Y = Y * height_scale + height_const;
 
@@ -67,7 +65,7 @@ skaneY = nan(s);
 skaneY(notnanim) = Y(notnanim);
 
 %% Measured values with validation data
-data = csvread('proj1/skane_data.csv', 0, 1);
+data = csvread('proj1/skane_2018-08-12_data.csv', 0, 1);
 n_points = size(data, 1);
 
 skaneRain = zeros(n_points, 5);
@@ -78,3 +76,8 @@ skaneRain(:, 4) = data(:, 2);
 skaneRain(:, 5) = randperm(n_points) <= 8;
 
 save('proj1/skaneRainfall.mat', 'skaneRain', 'skaneElevation', 'skaneX', 'skaneY', 'skaneBorder');
+
+%% Testplot
+figure(); hold on;
+plot(skaneBorder(:, 1), skaneBorder(:, 2))
+plot(skaneRain(:, 3), skaneRain(:, 4), 'o')

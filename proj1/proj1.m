@@ -1,20 +1,22 @@
 %% Initializing values
 load swissRainfall.mat
+elevation = swissElevation;
 grid = [swissElevation(:) swissX(:) swissY(:)];
 rain = swissRain;
 border = swissBorder;
 
 % load skaneRainfall.mat
+% elevation = skaneElevation;
 % grid = [skaneElevation(:) skaneX(:) skaneY(:)];
 % rain = skaneRain;
 % border = skaneBorder;
 
 notnanim = ~isnan(grid(:, 1));
 grid = grid(notnanim,:);
-Y = rain(rain(:,5)==0,:);
-Y_valid = rain(rain(:,5)==1,:);
+Y = rain(rain(:, 5) == 0, :);
+Y_valid = rain(rain(:, 5) == 1, :);
 D = distance_matrix([Y(:, 3), Y(:, 4)]);
-sz = size(swissElevation);
+sz = size(elevation);
 n = size(Y, 1);
 
 transform = 'sqrt';
@@ -31,22 +33,22 @@ I_obs = logical([ones(size(Y, 1), 1); zeros(size(Y_valid, 1), 1); zeros(size(gri
 coords_all = [Y(:, 3:4); Y_valid(:, 3:4); grid(:, 2:3)];
 elev_all = [Y(:, 2); Y_valid(:, 2); grid(:, 1)];
 
-X_u = elev_all(~I_obs, :);
-X_u = [ones(size(X_u, 1), 1), X_u, X_u.^2];
-X_k = elev_all(I_obs, :);
-X_k = [ones(size(X_k, 1), 1), X_k, X_k.^2];
+X = [ones(length(elev_all), 1), elev_all, elev_all.^2];
+% X = X(:, 1); % skåne is flat
+
+X_u = X(~I_obs, :);
+X_k = X( I_obs, :);
 
 D_all = distance_matrix(coords_all);
 
 
 %% Interpolation using only regression term
-X = [ones(length(y), 1), Y(:, 2), Y(:, 2).^2];
-beta = (X' * X) \ X' * y;
+beta = (X_k' * X_k) \ X_k' * y;
 
 % Beta significance
-z = y - X * beta;
+z = y - X_k * beta;
 s2 = sum(z.^2) / (length(z) - length(beta));
-beta_var = s2 * inv((X' * X));
+beta_var = s2 * inv((X_k' * X_k));
 beta_confidence_interval = [beta - 1.96 * sqrt(diag(beta_var)), beta + 1.96 * sqrt(diag(beta_var))];
 
 % figure()
@@ -78,7 +80,7 @@ rain_rec_reg = nan(sz);
 rain_rec_reg(notnanim) = y_rec_reg((size(Y, 1) + size(Y_valid, 1) + 1):end);
 figure()
 hold on
-imagesc([0 max(swissX(:))], [0 max(swissY(:))], rain_rec_reg, ...
+imagesc([min(grid(:, 2)) max(grid(:, 2))], [min(grid(:, 3)) max(grid(:, 3))], rain_rec_reg, ...
         'alphadata', ~isnan(rain_rec_reg))
 plot(border(:,1), border(:,2),'k')
 scatter(Y(:,3), Y(:,4), 20, Y(:,1), 'filled','markeredgecolor','r')
@@ -96,7 +98,6 @@ xlim([0.5, 10.5])
 xlabel('Indicies of validation data')
 ylabel('Rain (mm)')
 legend('Real values', 'Estimated values')
-
 
 
 
@@ -124,22 +125,24 @@ boot_max = rhats_sorted(:, 95);
 % plot(d, boot_max, '--r')
 % plot(d, rhat, 'b')
 
+
 %% Interpolation using both regression and covariance
 
 % Estimating covariance matrix/field
 covf = 'matern';
 par_fixed = [0, 0, 0, 0];
-[par, beta_ml] = covest_ml(D, y, covf, par_fixed, X);
-%par = covest_ml(D, y, covf, par_fixed, X, 'reml', );
+[par, beta_ml] = covest_ml(D, y, covf, par_fixed, X_k);
+%par = covest_ml(D, y, covf, par_fixed, X_k, 'reml', );
 
-% [par1, beta_ml1] = covest_ml(D, y, 'exponential', par_fixed, X);
-% [par2, beta_ml2] = covest_ml(D, y, 'matern', [0,0,0,0], X);
-% [par3, beta_ml3] = covest_ml(D, y, 'cauchy', [0,0,0,0], X);
-% [par4, beta_ml4] = covest_ml(D, y, 'spherical', [0,0,0], X);
+% [par1, beta_ml1] = covest_ml(D, y, 'exponential', par_fixed, X_k);
+% [par2, beta_ml2] = covest_ml(D, y, 'matern', [0,0,0,0], X_k);
+% [par3, beta_ml3] = covest_ml(D, y, 'cauchy', [0,0,0,0], X_k);
+% [par4, beta_ml4] = covest_ml(D, y, 'spherical', [0,0,0], X_k);
 
-plot(d, rhat, 'b');
-hold on
-plot(d, matern_covariance(d, par(1), par(2),par(3)),'r');
+% figure()
+% hold on
+% plot(d, rhat, 'b');
+% plot(d, matern_covariance(d, par(1), par(2),par(3)),'r');
 % hold on
 % plot(d, exponential_covariance(d, par1(1), par1(2)),'g');
 % hold on
@@ -152,7 +155,7 @@ plot(d, matern_covariance(d, par(1), par(2),par(3)),'r');
 
 % Beta ml significance
 Sigma = matern_covariance(D, par(1), par(2), par(3));
-beta_ml_var = inv((X' / Sigma * X));
+beta_ml_var = inv((X_k' / Sigma * X_k));
 beta_ml_confidence_interval = [beta_ml - 1.96 * sqrt(diag(beta_ml_var)),...
                                     beta_ml + 1.96 * sqrt(diag(beta_ml_var))];
 
@@ -187,7 +190,7 @@ rain_rec_cov = nan(sz);
 rain_rec_cov(notnanim) = y_rec_cov((size(Y, 1) + size(Y_valid, 1) + 1):end);
 figure()
 hold on
-imagesc([0 max(swissX(:))], [0 max(swissY(:))], rain_rec_cov, ...
+imagesc([min(grid(:, 2)) max(grid(:, 2))], [min(grid(:, 3)) max(grid(:, 3))], rain_rec_cov, ...
         'alphadata', ~isnan(rain_rec_cov))
 plot(border(:,1), border(:,2),'k')
 scatter(Y(:,3), Y(:,4), 20, Y(:,1), 'filled','markeredgecolor','r')
