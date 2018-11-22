@@ -74,7 +74,7 @@ skaneRain(:, 1) = data(:, 4);
 skaneRain(:, 2) = zeros(n_points, 1);
 skaneRain(:, 3) = data(:, 3);
 skaneRain(:, 4) = data(:, 2);
-skaneRain(:, 5) = randperm(n_points) <= 8;
+skaneRain(:, 5) = randperm(n_points) <= 5; % number of validation points
 
 save('proj1/skaneRainfall.mat', 'skaneRain', 'skaneElevation', 'skaneX', 'skaneY', 'skaneBorder');
 

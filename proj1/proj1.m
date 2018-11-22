@@ -1,17 +1,19 @@
 %% Initializing values
-load swissRainfall.mat
-elevation = swissElevation;
-grid = [swissElevation(:) swissX(:) swissY(:)];
-rain = swissRain;
-border = swissBorder;
 skane = false;
 
-% load skaneRainfall.mat
-% elevation = skaneElevation;
-% grid = [skaneElevation(:) skaneX(:) skaneY(:)];
-% rain = skaneRain;
-% border = skaneBorder;
-% skane = true;
+if ~skane
+  load swissRainfall.mat
+  elevation = swissElevation;
+  grid = [swissElevation(:) swissX(:) swissY(:)];
+  rain = swissRain;
+  border = swissBorder;
+else
+  load skaneRainfall.mat
+  elevation = skaneElevation;
+  grid = [skaneElevation(:) skaneX(:) skaneY(:)];
+  rain = skaneRain;
+  border = skaneBorder;
+end
 
 notnanim = ~isnan(grid(:, 1));
 grid = grid(notnanim,:);
@@ -98,7 +100,7 @@ figure()
 hold on
 plot(Y_valid(:, 1), '*')
 errorbar(y_rec_reg(I_valid), 1.96 * sqrt(V_reg(I_valid)), '.')
-xlim([0.5, 10.5])
+xlim([0.5, sum(I_valid) + 0.5])
 xlabel('Indicies of validation data')
 ylabel('Rain (mm)')
 legend('Real values', 'Estimated values')
@@ -209,7 +211,7 @@ figure()
 hold on
 plot(Y_valid(:, 1), '*')
 errorbar(y_rec_cov(I_valid), 1.96 * sqrt(V_cov(I_valid)), '.')
-xlim([0.5, 10.5])
+xlim([0.5, sum(I_valid) + 0.5])
 xlabel('Indicies of validation data')
 ylabel('Rain (mm)')
 legend('Real values', 'Estimated values')
