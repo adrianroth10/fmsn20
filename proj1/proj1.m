@@ -55,7 +55,7 @@ beta = (X_k' * X_k) \ X_k' * y;
 z = y - X_k * beta;
 s2 = sum(z.^2) / (length(z) - length(beta));
 beta_var = s2 * inv((X_k' * X_k));
-beta_confidence_interval = [beta - 1.96 * sqrt(diag(beta_var)), beta + 1.96 * sqrt(diag(beta_var))];
+beta_confidence_interval = 1.96 * sqrt(diag(beta_var))
 
 % figure()
 % hold on
@@ -162,8 +162,7 @@ par_fixed = [0, 0, 0, 0];
 % Beta ml significance
 Sigma = matern_covariance(D, par(1), par(2), par(3));
 beta_ml_var = inv((X_k' / Sigma * X_k));
-beta_ml_confidence_interval = [beta_ml - 1.96 * sqrt(diag(beta_ml_var)),...
-                                    beta_ml + 1.96 * sqrt(diag(beta_ml_var))];
+beta_ml_confidence_interval = 1.96 * sqrt(diag(beta_ml_var))
 
 %% Interpolation
 Sigma_all = matern_covariance(D_all, par(1), par(2), par(3));
@@ -201,8 +200,13 @@ imagesc([min(grid(:, 2)) max(grid(:, 2))], [min(grid(:, 3)) max(grid(:, 3))], ra
 plot(border(:,1), border(:,2),'k')
 scatter(Y(:,3), Y(:,4), 20, Y(:,1), 'filled','markeredgecolor','r')
 scatter(Y_valid(:,3), Y_valid(:,4), 20, Y_valid(:,1), 'filled','markeredgecolor','g')
-xlabel('X-distance (km)');
-ylabel('Y-distance (km)');
+if skane
+  xlabel('X-distance (latitude $^o$)', 'interpreter', 'latex');
+  ylabel('Y-distance (longitude $^o$)', 'interpreter', 'latex');
+else
+  xlabel('X-distance (km)');
+  ylabel('Y-distance (km)');
+end
 c = colorbar;
 axis xy tight; hold off; c; ylabel(c, 'Rain (mm)');
 
