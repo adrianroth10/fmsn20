@@ -1,5 +1,5 @@
 %% Initializing values
-skane = true;
+skane = false;
 
 if ~skane
   load swissRainfall.mat
@@ -78,6 +78,7 @@ elseif strcmp(transform, 'log')
   y_rec_reg = exp(y_rec_reg)-1;
 end
 V_reg = s2 + sum((X_u*beta_var).*X_u,2);
+V_reg = [zeros(sum(I_obs(:)), 1); V_reg];
 
 reg_validation_rms_error = sqrt(mean(V_reg(I_valid) .* (y_rec_reg(I_valid) - Y_valid(:, 1)).^2))
 
@@ -186,6 +187,7 @@ V_cov_1 = diag(Sigma_uu) - sum((Sigma_uk / Sigma_kk) .* Sigma_uk, 2);
 quad_coeff = (X_u' - X_k' / Sigma_kk * Sigma_uk');
 V_cov_2 = sum((quad_coeff' * beta_ml_var) .* quad_coeff', 2);
 V_cov = V_cov_1 + V_cov_2;
+V_cov = [zeros(sum(I_obs(:)), 1); V_cov];
 
 cov_validation_rms_error = sqrt(mean(V_cov(I_valid) .* (y_rec_cov(I_valid) - Y_valid(:, 1)).^2))
 
@@ -212,7 +214,7 @@ axis xy tight; hold off; c; ylabel(c, 'Rain (mm)');
 
 
 rain_var_cov = nan(sz);
-rain_var_cov(notnanim) = sqrt(V_cov((size(Y_valid, 1) + 1):end));
+rain_var_cov(notnanim) = sqrt(V_cov((size(Y, 1) + size(Y_valid, 1) + 1):end));
 figure()
 hold on
 imagesc([min(grid(:, 2)) max(grid(:, 2))], [min(grid(:, 3)) max(grid(:, 3))], rain_var_cov, ...
