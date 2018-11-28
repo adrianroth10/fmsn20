@@ -2,7 +2,8 @@
 %%2. Complete gmrf taylor skeleton.m.
 %%3. Complete gmrf negloglike skeleton.m.
 %%4. Estimate parameters for the different models and decide on covariates.
-%%5. Reconstruct the different components of the latent field, e.g. E(z|y), and compute the reconstruction uncertainty, V(z|y).
+%%5. Reconstruct the different components of the latent field, e.g. E(z|y),
+%%and compute the reconstruction uncertainty, V(z|y).
 
 
 %% Suggested skeleton
@@ -41,4 +42,9 @@ G, G2, 1e-6, true), [0 0]);
 %conditional mean is given by the mode
 E_xy = x_mode;
 %reuse taylor expansion to compute posterior precision
-%[~, ~, Q_xy_SAR] = GMRF_taylor(E_xy, Y(I), ...);
+tau = 1;
+kappa = 0.001;
+Qcar = tau*(kappa*C + G);
+[~, ~, Q_xy_SAR] = GMRF_taylor(E_xy, Y(I), Atilde, Qcar);
+
+
