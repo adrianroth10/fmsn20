@@ -5,7 +5,6 @@
 %%5. Reconstruct the different components of the latent field, e.g. E(z|y),
 %%and compute the reconstruction uncertainty, V(z|y).
 
-
 %% Suggested skeleton
 %load data
 load HA2_forest
@@ -15,6 +14,7 @@ sz = size(bei_counts);
 Y = bei_counts(:);
 %missing data
 I = ~isnan(Y);
+
 %create Q-matrix
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
@@ -43,8 +43,13 @@ G, G2, 1e-6, true), [0 0]);
 E_xy = x_mode;
 %reuse taylor expansion to compute posterior precision
 tau = 1;
-kappa = 0.001;
-Qcar = tau*(kappa*C + G);
+kappa2 = 0.001;
+Qcar = tau*(kappa2*C + G);
+Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
 [~, ~, Q_xy_SAR] = GMRF_taylor(E_xy, Y(I), Atilde, Qcar);
+
+
+e = [zeros(size(Q_xy,1)-size(B,2), size(B,2)); eye(size(B,2))];
+V_beta0 = e'*(Q_xy\e);
 
 

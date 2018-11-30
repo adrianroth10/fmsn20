@@ -49,7 +49,7 @@ if p_x~=0 || p_xy~=0
   return;
 end
 
-% log p(y|x) + log(x|theta) - g 
+% log p(y|x) + log(x|theta) - g  som i teorifråga 4
 negloglike = 
 
 %print diagnostic/debug information (optimization progress)
