@@ -17,14 +17,14 @@ z = A*x_0;
 % size(Q)
 % size(x_0)
 % size(z)
-logp = y.* z - exp(z) - log(factorial(y));
+logp = y .* z - exp(z) - log(factorial(y));
 % size(logp)
 %compute the function
 g = x_0'*Q*x_0/2 - sum(logp);
 
 if nargout>1
   %compute derivatives (if needed, i.e. nargout>1)
-  d_logp = y-exp(z);
+  d_logp = y - exp(z);
   dg = Q*x_0 - A'*d_logp;
 end
 

@@ -20,6 +20,7 @@ I = ~isnan(Y);
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
 %mean value-vector (might not need all)
 Bgrid = [ones(prod(sz),1) bei_elev(:) bei_grad(:)];
+qbeta = 1e-6;
 %and observation matrix for the grid
 Agrid = speye(prod(sz));
 %G2 is the most dense of the matrices, lets reorder
@@ -38,35 +39,43 @@ global x_mode;
 x_mode = [];
 %subset Y and Atilde to observed points
 par = fminsearch( @(x) GMRF_negloglike(x, Y(I), Atilde(I,:), C, ...
-G, G2, 1e-6, true), [0 0]);
+G, G2, qbeta, true), [0 0]);
 %conditional mean is given by the mode
 E_xy = x_mode;
+E_zy = Atilde*E_xy;
+E_zy = 10 * max(Atilde*x_mode,0);
+
 %reuse taylor expansion to compute posterior precision
-tau = 1;
-kappa2 = 0.001;
+tau = par(1);
+kappa2 = par(2);
 Qcar = tau*(kappa2*C + G);
 Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
-qbeta = 1e-6;
 Nbeta = size(Bgrid,2);
 Qtilde = blkdiag(Qcar, qbeta*speye(Nbeta));
 
-[~, ~, Q_xy] = GMRF_taylor(E_xy, Y(I), Atilde(I,:), Qtilde);
+[~, ~, Q_xy] = GMRF_taylor(E_xy, Y(I), Atilde(I, :), Qtilde);
+Qeps = 1e5 * speye(sum(I));
+E_xy2 = Q_xy \ Atilde(I, :)' * Qeps * Y(I);
+E_zy2 = Atilde*E_xy2;
+figure()
+subplot(1,2,1)
+imagesc(reshape(E_zy, sz))
+colorbar
+subplot(1,2,2)
+imagesc(reshape(E_zy2, sz))
 
-% Exy = Qxy \ Aall' * Qeps * Y;
-% Exy(p) = Exy;
-% Ezy = [speye(size(Q, 1)), ones(size(Q, 1), 1)] * Exy;
-%%
+
+%% Variance of beta
 e = [zeros(size(Q_xy,1)-size(Bgrid,2), size(Bgrid,2)); eye(size(Bgrid,2))];
 V_beta0 = e'*(Q_xy\e);
 
-%Ez = max(Atilde*x_mode,0);
-Ez = Atilde*x_mode;
+%% Plotting
 figure()
 subplot(2,2,1)
 imagesc(reshape(bei_counts, sz))
 colorbar
 subplot(2,2,2)
-imagesc(reshape(Ez, sz))
+imagesc(reshape(E_zy, sz))
 colorbar
 subplot(2,2,3)
 imagesc(reshape(bei_elev,sz))

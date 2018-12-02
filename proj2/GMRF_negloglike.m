@@ -42,14 +42,16 @@ x_mode = fminNR(@(x) GMRF_taylor(x, y, Atilde, Qtilde), x_mode);
 [R_x,p_x] = chol(Q_x);
 [R_xy,p_xy] = chol(Q_xy);
 if p_x~=0 || p_xy~=0
-  %choleskey factor fail -> (almost) semidefinite matrix -> 
+  %choleskey factor fail -> (almost) semidefinite matrix ->
   %-> det(Q) ~ 0 -> log(det(Q)) ~ -inf -> negloglike ~ inf
   %Set negloglike to a REALLY big value
   negloglike = realmax;
   return;
 end
 
-negloglike = (-0.5*sum(log(diag(R_x))) - 0.5*Nbeta*log(qbeta) + g + 0.5*sum(log(diag(R_xy))));
+z = Atilde * x_mode;
+logp = y .* z - exp(z) - log(factorial(y));
+negloglike = 0.5 * (-sum(log(diag(R_x))) - Nbeta*log(qbeta) + sum(log(diag(R_xy)))) + g + sum(logp);
 
 %print diagnostic/debug information (optimization progress)
 fprintf(1, 'Theta: %11.4e %11.4e; fval: %11.4e\n', theta(1), theta(2), negloglike);
