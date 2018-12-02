@@ -45,14 +45,32 @@ E_xy = x_mode;
 tau = 1;
 kappa2 = 0.001;
 Qcar = tau*(kappa2*C + G);
+Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
 qbeta = 1e-6;
 Nbeta = size(Bgrid,2);
 Qtilde = blkdiag(Qcar, qbeta*speye(Nbeta));
-%Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
+
 [~, ~, Q_xy] = GMRF_taylor(E_xy, Y(I), Atilde(I,:), Qtilde);
 
-
+% Exy = Qxy \ Aall' * Qeps * Y;
+% Exy(p) = Exy;
+% Ezy = [speye(size(Q, 1)), ones(size(Q, 1), 1)] * Exy;
+%%
 e = [zeros(size(Q_xy,1)-size(Bgrid,2), size(Bgrid,2)); eye(size(Bgrid,2))];
 V_beta0 = e'*(Q_xy\e);
 
-
+%Ez = max(Atilde*x_mode,0);
+Ez = Atilde*x_mode;
+figure()
+subplot(2,2,1)
+imagesc(reshape(bei_counts, sz))
+colorbar
+subplot(2,2,2)
+imagesc(reshape(Ez, sz))
+colorbar
+subplot(2,2,3)
+imagesc(reshape(bei_elev,sz))
+colorbar
+subplot(2,2,4)
+imagesc(reshape(bei_grad,sz))
+colorbar

@@ -49,7 +49,7 @@ if p_x~=0 || p_xy~=0
   return;
 end
 
-negloglike = -sum(log(diag(R_x))) - Nbeta*log(qbeta) + g + sum(log(diag(R_xy)));
+negloglike = (-0.5*sum(log(diag(R_x))) - 0.5*Nbeta*log(qbeta) + g + 0.5*sum(log(diag(R_xy))));
 
 %print diagnostic/debug information (optimization progress)
 fprintf(1, 'Theta: %11.4e %11.4e; fval: %11.4e\n', theta(1), theta(2), negloglike);

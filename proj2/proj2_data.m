@@ -42,7 +42,7 @@ Agrid = Agrid(:,p);
 
 %create A tilde matrix
 Atilde = [Agrid Bgrid]; 
-
+%%
 %we need a global variable for x_mode to reuse
 %between optimisation calls
 global x_mode;
@@ -55,9 +55,9 @@ E_xy = x_mode;
 %and reconstruction (field+covariates)
 E_zy = Atilde*x_mode;
 imagesc( reshape(E_zy,sz) )
-
+%%
 %reuse taylor expansion to compute posterior precision
-[~, ~, Q_xy] = GMRF_taylor(E_xy, Y(I), ...);
+[~, ~, Q_xy] = GMRF_taylor(E_xy, Y(I),  Atilde(I,:), Qtilde);
 
 %1000 samples from the approximate posterior
 Rxy = chol(Q_xy);

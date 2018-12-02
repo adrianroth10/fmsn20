@@ -14,8 +14,8 @@ function [g, dg, d2g]= GMRF_taylor(x_0, y, A, Q)
 z = A*x_0;
 % size(A)
 % size(y)
-%  size(Q)
-%  size(x_0)
+% size(Q)
+% size(x_0)
 % size(z)
 logp = y.* z - exp(z) - log(factorial(y));
 % size(logp)
