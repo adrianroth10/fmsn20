@@ -12,7 +12,7 @@ load HA2_forest
 sz = size(bei_counts);
 %observations
 Y = bei_counts(:);
-%missing data
+% data
 I = ~isnan(Y);
 
 %create Q-matrix
@@ -45,11 +45,14 @@ E_xy = x_mode;
 tau = 1;
 kappa2 = 0.001;
 Qcar = tau*(kappa2*C + G);
-Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
-[~, ~, Q_xy_SAR] = GMRF_taylor(E_xy, Y(I), Atilde, Qcar);
+qbeta = 1e-6;
+Nbeta = size(Bgrid,2);
+Qtilde = blkdiag(Qcar, qbeta*speye(Nbeta));
+%Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
+[~, ~, Q_xy] = GMRF_taylor(E_xy, Y(I), Atilde(I,:), Qtilde);
 
 
-e = [zeros(size(Q_xy,1)-size(B,2), size(B,2)); eye(size(B,2))];
+e = [zeros(size(Q_xy,1)-size(Bgrid,2), size(Bgrid,2)); eye(size(Bgrid,2))];
 V_beta0 = e'*(Q_xy\e);
 
 

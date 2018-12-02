@@ -12,20 +12,25 @@ function [g, dg, d2g]= GMRF_taylor(x_0, y, A, Q)
 
 %compute log observations, and derivatives
 z = A*x_0;
-logp = y * log(z) - z - log(factorial(y));
-
+% size(A)
+% size(y)
+%  size(Q)
+%  size(x_0)
+% size(z)
+logp = y.* z - exp(z) - log(factorial(y));
+% size(logp)
 %compute the function
 g = x_0'*Q*x_0/2 - sum(logp);
 
 if nargout>1
   %compute derivatives (if needed, i.e. nargout>1)
-  d_logp = y/z -1;
+  d_logp = y-exp(z);
   dg = Q*x_0 - A'*d_logp;
 end
 
 if nargout>2
   %compute hessian (if needed, i.e. nargout>2)
-  d2_logp = -y/z^2;
+  d2_logp = -exp(z);
   n = size(A,1);
   d2g = Q - A'*spdiags(d2_logp,0,n,n)*A;
 end
