@@ -51,7 +51,7 @@ end
 
 z = Atilde * x_mode;
 logp = y .* z - exp(z) - log(factorial(y));
-negloglike = 0.5 * (-sum(log(diag(R_x))) - Nbeta*log(qbeta) + sum(log(diag(R_xy)))) + g + sum(logp);
+negloglike = 0.5 * (-2*sum(log(diag(R_x))) - 2* sum(log(diag(R_xy)))) + g;
 
 %print diagnostic/debug information (optimization progress)
 fprintf(1, 'Theta: %11.4e %11.4e; fval: %11.4e\n', theta(1), theta(2), negloglike);
