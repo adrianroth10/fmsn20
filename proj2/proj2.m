@@ -19,7 +19,7 @@ I = ~isnan(Y);
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
 %mean value-vector (might not need all)
-Bgrid = [ones(prod(sz),1) bei_elev(:) bei_grad(:)];
+Bgrid = [ones(prod(sz),1) bei_grad(:).^2 bei_elev(:) bei_elev(:).^2 ];
 qbeta = 1e-6;
 %and observation matrix for the grid
 Agrid = speye(prod(sz));
@@ -58,6 +58,18 @@ Qtilde = blkdiag(Qcar, qbeta*speye(Nbeta));
 e = [zeros(size(Q_xy,1)-size(Bgrid,2), size(Bgrid,2)); eye(size(Bgrid,2))];
 V_beta0 = e'*(Q_xy\e);
 
+
+%1000 samples from the approximate posterior
+Rxy = chol(Q_xy);
+x_samp = bsxfun(@plus, E_xy, Rxy\randn(size(Rxy,1),1000));
+
+Vzy = zeros(5000,1);
+for i =1:5000
+    Vzy(i) = var(x_samp(i,:));
+end
+
+%Vzy = Atilde*V_beta0*Atilde';
+imagesc(reshape(Vzy,sz))
 %% Plotting
 figure()
 subplot(2,2,1)

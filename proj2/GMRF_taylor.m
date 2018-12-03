@@ -12,13 +12,7 @@ function [g, dg, d2g]= GMRF_taylor(x_0, y, A, Q)
 
 %compute log observations, and derivatives
 z = A*x_0;
-% size(A)
-% size(y)
-% size(Q)
-% size(x_0)
-% size(z)
 logp = y .* z - exp(z) - log(factorial(y));
-% size(logp)
 %compute the function
 g = x_0'*Q*x_0/2 - sum(logp);
 
