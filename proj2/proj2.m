@@ -42,8 +42,7 @@ par = fminsearch( @(x) GMRF_negloglike(x, Y(I), Atilde(I,:), C, ...
 G, G2, qbeta, true), [0 0]);
 %conditional mean is given by the mode
 E_xy = x_mode;
-E_zy = Atilde*E_xy;
-E_zy = 10 * max(Atilde*x_mode,0);
+E_zy = exp(Atilde * E_xy);
 
 %reuse taylor expansion to compute posterior precision
 tau = par(1);
@@ -53,17 +52,7 @@ Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
 Nbeta = size(Bgrid,2);
 Qtilde = blkdiag(Qcar, qbeta*speye(Nbeta));
 
-[~, ~, Q_xy] = GMRF_taylor(E_xy, Y(I), Atilde(I, :), Qtilde);
-Qeps = 1e5 * speye(sum(I));
-E_xy2 = Q_xy \ Atilde(I, :)' * Qeps * Y(I);
-E_zy2 = Atilde*E_xy2;
-figure()
-subplot(1,2,1)
-imagesc(reshape(E_zy, sz))
-colorbar
-subplot(1,2,2)
-imagesc(reshape(E_zy2, sz))
-
+[~, f, Q_xy] = GMRF_taylor(E_xy, Y(I), Atilde(I, :), Qtilde);
 
 %% Variance of beta
 e = [zeros(size(Q_xy,1)-size(Bgrid,2), size(Bgrid,2)); eye(size(Bgrid,2))];
@@ -72,14 +61,18 @@ V_beta0 = e'*(Q_xy\e);
 %% Plotting
 figure()
 subplot(2,2,1)
+title('Counted data')
 imagesc(reshape(bei_counts, sz))
 colorbar
 subplot(2,2,2)
+title('Estimated data')
 imagesc(reshape(E_zy, sz))
 colorbar
 subplot(2,2,3)
+title('Elevation')
 imagesc(reshape(bei_elev,sz))
 colorbar
 subplot(2,2,4)
+title('Elevation gradient')
 imagesc(reshape(bei_grad,sz))
 colorbar
