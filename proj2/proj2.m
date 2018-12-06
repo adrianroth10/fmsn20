@@ -14,6 +14,15 @@ sz = size(bei_counts);
 Y = bei_counts(:);
 % data
 I = ~isnan(Y);
+Yvalid = false(5000,1);
+for i = 1:10:length(I)
+    index = i;
+    while I(index)==0 
+    index = index+1;
+    end
+    Yvalid(i)= true;
+    I(index) = 0;
+end
 
 %create Q-matrix
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
@@ -67,8 +76,10 @@ Vzy = zeros(5000,1);
 for i =1:5000
     Vzy(i) = var(x_samp(i,:));
 end
-
 %Vzy = Atilde*V_beta0*Atilde';
+
+rms_error = sqrt(mean(~isnan(Vzy(Yvalid).*(E_zy(Yvalid)- Y(Yvalid)).^2)));
+
 imagesc(reshape(Vzy,sz))
 %% Plotting
 figure()
@@ -79,6 +90,8 @@ colorbar
 subplot(2,2,2)
 title('Estimated data')
 imagesc(reshape(E_zy, sz))
+%hold on 
+%scatter(E_zy(Yvalid), E_zy(Yvalid), 20, sqrt(Vzy(Yvalid)), 'filled','markeredgecolor','g')
 colorbar
 subplot(2,2,3)
 title('Elevation')
