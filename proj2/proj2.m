@@ -24,10 +24,12 @@ I(Ivalid) = false;
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
 %mean value-vector (might not need all)
-Bgrid = [ones(prod(sz),1) bei_grad(:) bei_grad(:).^2 bei_elev(:)];
+Bgrid = [ones(prod(sz),1) bei_elev(:) ];
+%Bgrid = [zeros(prod(sz),1)];
 qbeta = 1e-6;
 %and observation matrix for the grid
-Agrid = speye(prod(sz));
+%Agrid = speye(prod(sz));
+Agrid = 0*speye(prod(sz));
 %G2 is the most dense of the matrices, lets reorder
 p = amd(G2);
 %reorder precision matrices
@@ -44,7 +46,7 @@ global x_mode;
 x_mode = [];
 %subset Y and Atilde to observed points
 par = fminsearch( @(x) GMRF_negloglike(x, Y(I), Atilde(I,:), C, ...
-G, G2, qbeta, false), [0 0]);
+G, G2, qbeta, true), [0 0]);
 %conditional mean is given by the mode
 E_xy = x_mode;
 E_zy = exp(Atilde * E_xy);
@@ -52,10 +54,12 @@ E_zy = exp(Atilde * E_xy);
 %reuse taylor expansion to compute posterior precision
 tau = exp(par(1));
 kappa2 = exp(par(2));
+gamma = 1;
 Qcar = tau*(kappa2*C + G);
 Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
+Qosc = tau*(kappa2^2*C + 2*gamma*kappa2*G + G2);
 Nbeta = size(Bgrid,2);
-Qtilde = blkdiag(Qsar, qbeta*speye(Nbeta));
+Qtilde = blkdiag(Qcar, qbeta*speye(Nbeta));
 
 [~, f, Q_xy] = GMRF_taylor(E_xy, Y(I), Atilde(I, :), Qtilde);
 
@@ -72,12 +76,12 @@ x_samp = bsxfun(@plus, E_xy, Rxy\randn(size(Rxy,1),1000));
 
 
 Vx  = 1/(size(x_samp,2)-length(V_beta0))*sum(x_samp(1:end-length(V_beta0),:).^2,2);
-Vzy = Vx + sum((Bgrid*V_beta0).*Bgrid,2);
+Vzy = Vx + sum(Bgrid*V_beta0*Bgrid',2);
 std = Vzy.^(1/2);
 
 rms_error = validations(Y(Ivalid), E_zy(Ivalid), Vzy(Ivalid));  % sqrt(mean(Vzy(Ivalid).*(E_zy(Ivalid)- Y(Ivalid)).^2)));
 
-%imagesc(reshape(Vzy,sz))
+% imagesc(reshape(Vzy,sz))
 %% Plotting
 figure()
 subplot(1,2,1)
@@ -90,20 +94,20 @@ title('Standard deviation')
 imagesc(reshape(std,sz))
 colorbar
 %%
-figure()
-subplot(2,2,1)
-title('Counted data')
-imagesc(reshape(bei_counts, sz))
-colorbar
-subplot(2,2,2)
-title('Counted data')
-imagesc(reshape(Ivalid, sz))
-colorbar
-subplot(2,2,3)
-title('Elevation')
-imagesc(reshape(bei_elev,sz))
-colorbar
-subplot(2,2,4)
-title('Elevation gradient')
-imagesc(reshape(bei_grad,sz))
-colorbar
+% figure()
+% subplot(2,2,1)
+% title('Counted data')
+% imagesc(reshape(bei_counts, sz))
+% colorbar
+% subplot(2,2,2)
+% title('Counted data')
+% imagesc(reshape(Ivalid, sz))
+% colorbar
+% subplot(2,2,3)
+% title('Elevation')
+% imagesc(reshape(bei_elev,sz))
+% colorbar
+% subplot(2,2,4)
+% title('Elevation gradient')
+% imagesc(reshape(bei_grad,sz))
+% colorbar
