@@ -50,8 +50,8 @@ E_xy = x_mode;
 E_zy = exp(Atilde * E_xy);
 
 %reuse taylor expansion to compute posterior precision
-tau = par(1);
-kappa2 = par(2);
+tau = exp(par(1));
+kappa2 = exp(par(2));
 Qcar = tau*(kappa2*C + G);
 Qsar = tau*(kappa2^2*C + 2*kappa2*G + G2);
 Nbeta = size(Bgrid,2);
@@ -70,10 +70,16 @@ x_samp = bsxfun(@plus, E_xy, Rxy\randn(size(Rxy,1),1000));
 
 
 Vx  = 1/(size(x_samp,2)-length(V_beta0))*sum(x_samp(1:end-length(V_beta0),:).^2,2);
-Vzy = Vx + sum((Bgrid*V_beta0).*Bgrid,2); 
+Vzy = Vx + sum((Bgrid*V_beta0).*Bgrid,2);
 std = Vzy.^(1/2);
 
-rms_error = sqrt(mean(Vzy(Ivalid).*(E_zy(Ivalid)- Y(Ivalid)).^2));
+rms_error = validations(Y(Ivalid), E_zy(Ivalid), Vzy(Ivalid));  % sqrt(mean(Vzy(Ivalid).*(E_zy(Ivalid)- Y(Ivalid)).^2)));
+
+figure()
+hold on
+plot(Y(Ivalid), '*')
+errorbar(E_zy(Ivalid), 1.96 * sqrt(Vzy(Ivalid)), '.')
+return
 
 imagesc(reshape(Vzy,sz))
 %% Plotting

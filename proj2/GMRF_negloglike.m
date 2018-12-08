@@ -52,4 +52,4 @@ end
 negloglike = g - sum(log(diag(R_x))) + Nbeta / 2 * log(qbeta) + sum(log(diag(R_xy)));
 
 %print diagnostic/debug information (optimization progress)
-fprintf(1, 'Theta: %11.4e %11.4e; fval: %11.4e\n', theta(1), theta(2), negloglike);
+fprintf(1, 'Theta: %11.4e %11.4e; fval: %11.4e\n', exp(theta(1)), exp(theta(2)), negloglike);
