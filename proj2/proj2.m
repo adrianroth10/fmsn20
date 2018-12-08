@@ -20,7 +20,7 @@ for i = 1:10:length(I)
     while I(index)==0 
     index = index+1;
     end
-    Yvalid(i)= true;
+    Yvalid(index)= true;
     I(index) = 0;
 end
 
@@ -28,7 +28,7 @@ end
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
 %mean value-vector (might not need all)
-Bgrid = [ones(prod(sz),1) bei_grad(:).^2 bei_elev(:) bei_elev(:).^2 ];
+Bgrid = [ones(prod(sz),1) bei_elev(:) bei_grad(:)];
 qbeta = 1e-6;
 %and observation matrix for the grid
 Agrid = speye(prod(sz));
@@ -72,13 +72,10 @@ V_beta0 = e'*(Q_xy\e);
 Rxy = chol(Q_xy);
 x_samp = bsxfun(@plus, E_xy, Rxy\randn(size(Rxy,1),1000));
 
-Vzy = zeros(5000,1);
-for i =1:5000
-    Vzy(i) = var(x_samp(i,:));
-end
-%Vzy = Atilde*V_beta0*Atilde';
+Vx  = 1/(size(x_samp,2)-length(V_beta0))*sum(x_samp(1:end-3,:).^2,2);
+Vzy = Vx + sum((Bgrid*V_beta0).*Bgrid,2); 
 
-rms_error = sqrt(mean(~isnan(Vzy(Yvalid).*(E_zy(Yvalid)- Y(Yvalid)).^2)));
+rms_error = sqrt(mean(Vzy(Yvalid).*(E_zy(Yvalid)- Y(Yvalid)).^2));
 
 imagesc(reshape(Vzy,sz))
 %% Plotting
