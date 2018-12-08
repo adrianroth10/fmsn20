@@ -3,7 +3,7 @@
 %%3. Complete gmrf negloglike skeleton.m.
 %%4. Estimate parameters for the different models and decide on covariates.
 %%5. Reconstruct the different components of the latent field, e.g. E(z|y),
-%%and compute the reconstruction uncertainty, V(z|y).
+%%   and compute the reconstruction uncertainty, V(z|y).
 
 %% Suggested skeleton
 %load data
@@ -13,16 +13,12 @@ sz = size(bei_counts);
 %observations
 Y = bei_counts(:);
 % data
+rng(0)  % setting seed for predictable random sequence
 I = ~isnan(Y);
-Yvalid = false(5000,1);
-for i = 1:10:length(I)
-    index = i;
-    while I(index)==0 
-    index = index+1;
-    end
-    Yvalid(index)= true;
-    I(index) = 0;
-end
+ind_i = find(I);
+Ivalid = logical(zeros(size(I)));
+Ivalid(ind_i(rand(size(ind_i)) < 0.1)) = true;
+I(Ivalid) = false;
 
 %create Q-matrix
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
@@ -73,9 +69,9 @@ Rxy = chol(Q_xy);
 x_samp = bsxfun(@plus, E_xy, Rxy\randn(size(Rxy,1),1000));
 
 Vx  = 1/(size(x_samp,2)-length(V_beta0))*sum(x_samp(1:end-3,:).^2,2);
-Vzy = Vx + sum((Bgrid*V_beta0).*Bgrid,2); 
+Vzy = Vx + sum((Bgrid*V_beta0).*Bgrid,2);
 
-rms_error = sqrt(mean(Vzy(Yvalid).*(E_zy(Yvalid)- Y(Yvalid)).^2));
+rms_error = sqrt(mean(Vzy(Ivalid).*(E_zy(Ivalid)- Y(Ivalid)).^2));
 
 imagesc(reshape(Vzy,sz))
 %% Plotting
@@ -87,8 +83,8 @@ colorbar
 subplot(2,2,2)
 title('Estimated data')
 imagesc(reshape(E_zy, sz))
-%hold on 
-%scatter(E_zy(Yvalid), E_zy(Yvalid), 20, sqrt(Vzy(Yvalid)), 'filled','markeredgecolor','g')
+%hold on
+%scatter(E_zy(Ivalid), E_zy(Ivalid), 20, sqrt(Vzy(Ivalid)), 'filled','markeredgecolor','g')
 colorbar
 subplot(2,2,3)
 title('Elevation')
