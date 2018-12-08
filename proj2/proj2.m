@@ -28,7 +28,7 @@ end
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
 %mean value-vector (might not need all)
-Bgrid = [ones(prod(sz),1) bei_elev(:) bei_grad(:)];
+Bgrid = [ones(prod(sz),1) bei_elev(:)];
 qbeta = 1e-6;
 %and observation matrix for the grid
 Agrid = speye(prod(sz));
@@ -72,29 +72,38 @@ V_beta0 = e'*(Q_xy\e);
 Rxy = chol(Q_xy);
 x_samp = bsxfun(@plus, E_xy, Rxy\randn(size(Rxy,1),1000));
 
-Vx  = 1/(size(x_samp,2)-length(V_beta0))*sum(x_samp(1:end-3,:).^2,2);
+Vx  = 1/(size(x_samp,2)-length(V_beta0))*sum(x_samp(1:end-length(V_beta0),:).^2,2);
 Vzy = Vx + sum((Bgrid*V_beta0).*Bgrid,2); 
+std = Vzy.^(1/2);
 
 rms_error = sqrt(mean(Vzy(Yvalid).*(E_zy(Yvalid)- Y(Yvalid)).^2));
 
 imagesc(reshape(Vzy,sz))
 %% Plotting
 figure()
-subplot(2,2,1)
-title('Counted data')
-imagesc(reshape(bei_counts, sz))
-colorbar
-subplot(2,2,2)
+subplot(1,2,1)
 title('Estimated data')
 imagesc(reshape(E_zy, sz))
-%hold on 
-%scatter(E_zy(Yvalid), E_zy(Yvalid), 20, sqrt(Vzy(Yvalid)), 'filled','markeredgecolor','g')
 colorbar
-subplot(2,2,3)
-title('Elevation')
-imagesc(reshape(bei_elev,sz))
+subplot(1,2,2)
+title('Standard deviation')
+imagesc(reshape(std,sz))
 colorbar
-subplot(2,2,4)
-title('Elevation gradient')
-imagesc(reshape(bei_grad,sz))
-colorbar
+%%
+% figure()
+% subplot(2,2,1)
+% title('Counted data')
+% imagesc(reshape(bei_counts, sz))
+% colorbar
+% subplot(2,2,2)
+% title('Counted data')
+% imagesc(reshape(Yvalid, sz))
+% colorbar
+% subplot(2,2,3)
+% title('Elevation')
+% imagesc(reshape(bei_elev,sz))
+% colorbar
+% subplot(2,2,4)
+% title('Elevation gradient')
+% imagesc(reshape(bei_grad,sz))
+% colorbar
