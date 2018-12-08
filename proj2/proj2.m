@@ -75,11 +75,6 @@ std = Vzy.^(1/2);
 
 rms_error = validations(Y(Ivalid), E_zy(Ivalid), Vzy(Ivalid));  % sqrt(mean(Vzy(Ivalid).*(E_zy(Ivalid)- Y(Ivalid)).^2)));
 
-figure()
-hold on
-plot(Y(Ivalid), '*')
-errorbar(E_zy(Ivalid), 1.96 * sqrt(Vzy(Ivalid)), '.')
-return
 
 %imagesc(reshape(Vzy,sz))
 %% Plotting
