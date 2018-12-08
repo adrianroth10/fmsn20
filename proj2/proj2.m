@@ -62,6 +62,8 @@ Qtilde = blkdiag(Qcar, qbeta*speye(Nbeta));
 %% Variance of beta
 e = [zeros(size(Q_xy,1)-size(Bgrid,2), size(Bgrid,2)); eye(size(Bgrid,2))];
 V_beta0 = e'*(Q_xy\e);
+beta = E_xy(end - length(V_beta0) + 1:end)
+beta_int_size = sqrt(diag(V_beta0)) * 1.96
 
 
 %1000 samples from the approximate posterior
@@ -75,11 +77,7 @@ std = Vzy.^(1/2);
 
 rms_error = validations(Y(Ivalid), E_zy(Ivalid), Vzy(Ivalid));  % sqrt(mean(Vzy(Ivalid).*(E_zy(Ivalid)- Y(Ivalid)).^2)));
 
-figure()
-hold on
-plot(Y(Ivalid), '*')
-errorbar(E_zy(Ivalid), 1.96 * sqrt(Vzy(Ivalid)), '.')
-return
+
 
 imagesc(reshape(Vzy,sz))
 %% Plotting
