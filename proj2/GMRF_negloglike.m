@@ -1,4 +1,4 @@
-function negloglike = GMRF_negloglike(theta, y, Atilde, C, G, G2, qbeta, isCAR)
+function negloglike = GMRF_negloglike(theta, y, Atilde, C, G, G2, qbeta, type)
 % GMRF_NEGLOGLIKE  Calculate the GMRF data likelihood, non-Gaussian observations
 % theta = [log(tau2) log(kappa2)]
 % y = the data vector, as a column with n elements
@@ -6,16 +6,19 @@ function negloglike = GMRF_negloglike(theta, y, Atilde, C, G, G2, qbeta, isCAR)
 % C,G,G2 = matrices used to build a Matern-like precision,
 %          see matern_prec_matrices, sparse N-by-N
 % qbeta = prior precision the regression parameters scalar
-% isCAR = use CAR model (false=SAR)
+% type = 1 (CAR), 2 (SAR), 3 (OSC)
 
 tau = exp(theta(1));
 kappa2 = exp(theta(2));
 
-%comput Q for a CAR(1) or SAR(1) process
-if isCAR
+%comput Q for a CAR(1), SAR(1) or OSC SAR process
+if type == 1
   Q_x = tau*(kappa2*C + G);
-else
+elseif type == 2
   Q_x = tau*(kappa2^2*C + 2*kappa2*G + G2);
+else
+  gamma = (exp(theta(3)) - 1) / (exp(theta(3)) + 1);
+  Q_x = tau*(kappa2^2*C + 2*gamma*kappa2*G + G2);
 end
 
 %combine Q_x and qbeta
@@ -52,4 +55,4 @@ end
 negloglike = g - sum(log(diag(R_x))) + Nbeta / 2 * log(qbeta) + sum(log(diag(R_xy)));
 
 %print diagnostic/debug information (optimization progress)
-fprintf(1, 'Theta: %11.4e %11.4e; fval: %11.4e\n', exp(theta(1)), exp(theta(2)), negloglike);
+% fprintf(1, 'Theta: %11.4e %11.4e; fval: %11.4e\n', theta(1), theta(2), negloglike);
