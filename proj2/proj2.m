@@ -1,11 +1,3 @@
-%%1. Start by computing all the components in the theory section
-%%2. Complete gmrf taylor skeleton.m.
-%%3. Complete gmrf negloglike skeleton.m.
-%%4. Estimate parameters for the different models and decide on covariates.
-%%5. Reconstruct the different components of the latent field, e.g. E(z|y),
-%%   and compute the reconstruction uncertainty, V(z|y).
-
-%% Suggested skeleton
 %load data
 load HA2_forest
 %size of the grid
@@ -16,7 +8,7 @@ Y = bei_counts(:);
 rng(0)  % setting seed for predictable random sequence
 I = ~isnan(Y);
 ind_i = find(I);
-Ivalid = false(size(I));
+Ivalid = logical(zeros(size(I)));
 Ivalid(ind_i(rand(size(ind_i)) < 0.1)) = true;
 I(Ivalid) = false;
 
@@ -24,12 +16,19 @@ I(Ivalid) = false;
 [u1, u2] = ndgrid(1:sz(1),1:sz(2));
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
 %mean value-vector (might not need all)
-%Bgrid = [ones(prod(sz),1) bei_elev(:) bei_elev(:).^2 bei_grad(:) bei_grad(:).^2 ];
-Bgrid = [zeros(prod(sz),1)];
-qbeta = 1e-6;
 %and observation matrix for the grid
 Agrid = speye(prod(sz));
 %Agrid = 0*speye(prod(sz));
+% Bgrid = [ones(prod(sz),1) bei_elev(:)];
+% Bgrid = [ones(prod(sz),1) bei_grad(:)];
+% % Bgrid = [ones(prod(sz),1) bei_elev(:) bei_grad(:)];
+% Bgrid = [ones(prod(sz),1) bei_elev(:) bei_elev(:).^2];
+% Bgrid = [ones(prod(sz),1) bei_grad(:) bei_grad(:).^2];
+Bgrid = [ones(prod(sz),1) bei_elev(:) bei_elev(:).^2 bei_grad(:) bei_grad(:).^2];
+Nbeta = size(Bgrid,2);
+qbeta = 1e-6;
+%and observation matrix for the grid
+Agrid = speye(prod(sz));
 %G2 is the most dense of the matrices, lets reorder
 p = amd(G2);
 %reorder precision matrices
@@ -81,18 +80,9 @@ std = Vzy.^(1/2);
 
 rms_error = validations(Y(Ivalid), E_zy(Ivalid), Vzy(Ivalid));  % sqrt(mean(Vzy(Ivalid).*(E_zy(Ivalid)- Y(Ivalid)).^2)));
 
-% imagesc(reshape(Vzy,sz))
-%% Plotting
-figure()
-subplot(1,2,1)
-title('Estimated data')
-imagesc(reshape(E_zy, sz))
+type = 1; % car model
+proj2_run;
 
-colorbar
-subplot(1,2,2)
-title('Standard deviation')
-imagesc(reshape(std,sz))
-colorbar
 %%
 % figure()
 % subplot(2,2,1)
