@@ -17,13 +17,12 @@ I(Ivalid) = false;
 [C,G,G2] = matern_prec_matrices([u1(:) u2(:)]);
 %mean value-vector (might not need all)
 %and observation matrix for the grid
-%Agrid = 0*speye(prod(sz));
 %Bgrid = [ones(prod(sz),1) bei_elev(:)];
 %Bgrid = [ones(prod(sz),1) bei_grad(:)];
 %Bgrid = [ones(prod(sz),1) bei_elev(:) bei_grad(:)];
 %Bgrid = [ones(prod(sz),1) bei_elev(:) bei_elev(:).^2];
-Bgrid = [ones(prod(sz),1) bei_grad(:) bei_grad(:).^2];
-%Bgrid = [ones(prod(sz),1) bei_elev(:) bei_elev(:).^2 bei_grad(:) bei_grad(:).^2];
+%Bgrid = [ones(prod(sz),1) bei_grad(:) bei_grad(:).^2];
+Bgrid = [ones(prod(sz),1) bei_elev(:) bei_elev(:).^2 bei_grad(:) bei_grad(:).^2];
 Nbeta = size(Bgrid,2);
 qbeta = 1e-6;
 %and observation matrix for the grid
@@ -39,7 +38,9 @@ Agrid = Agrid(:,p);
 %create A tilde matrix
 Atilde = [Agrid Bgrid];
 
-type = 2; % car model
+type = 1;
+proj2_run;
+type = 2;
 proj2_run;
 
 %%
