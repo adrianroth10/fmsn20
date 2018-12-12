@@ -4,9 +4,9 @@ function [alpha, beta, acc] = gibbs_alpha_beta(alpha, beta, z, f, beta_prior, MH
 %  [alpha, beta, acc] = gibbs_alpha_beta(alpha, beta, z, f, beta_prior, MHsigma)
 %  [alpha, beta, acc] = gibbs_alpha_beta(alpha, beta, z, N, beta_prior, MHsigma)
 %
-%  alpha:[] or 1x(K-1), the expectation-forcing parameters. (For
+%  alpha:[] or 1x(K-1), the expectation-forcing parameters. For
 %        identifiability the first element of alpha is taken as 0
-%        i.e. alpha = [0 alpha];
+%        i.e. the alpha used in mrf_sim should be extended as [0 alpha];
 %  beta: 1x1 or 1xK, the depency parameter(s)
 %  z:    mxnxK, the field as an indicator image
 %  f:    Number of neighbours
@@ -25,12 +25,12 @@ function [alpha, beta, acc] = gibbs_alpha_beta(alpha, beta, z, f, beta_prior, MH
 %      exp( alpha_k + beta_k * f_ik ) / (sum_k exp( ... ))
 %  where
 %    f_ik = #{neighbours=k}
-%  can be obtained from
-%    [~,~,f] = mrf_sim(z, N, alpha, beta,0)
+%  can be obtained from (recall the need to extend alpha)
+%    [~,~,f] = mrf_sim(z, N, [0 alpha], beta,0)
 %
 %  Returns updated alpha, beta and acceptance rate.
 
-% $Id: gibbs_alpha_beta.m 4862 2015-01-12 13:25:45Z johanl $
+% $Id: gibbs_alpha_beta.m 5254 2018-12-09 18:23:49Z johanl $
 
 %% Default parameters
 if nargin<5 || isempty(beta_prior), beta_prior=[]; end
@@ -65,8 +65,8 @@ if oneAlpha
   alpha = [];
   beta = alpha_beta;
 else
-  alpha = alpha_beta(1:(K-1));
-  beta = alpha_beta(K:end);
+  alpha = reshape(alpha_beta(1:(K-1)),1,[]);
+  beta = reshape(alpha_beta(K:end),1,[]);
 end
     
     

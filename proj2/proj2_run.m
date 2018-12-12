@@ -56,6 +56,7 @@ rms_error = sqrt(mean((E_out(Ivalid) - Y(Ivalid)).^2));
 weighted_rms_error = sqrt(mean(Vout(Ivalid) .* (E_out(Ivalid) - Y(Ivalid)).^2));
 fval = GMRF_negloglike(par, Y(I), Atilde(I, :), C, G, G2, qbeta, type);
 fprintf(1, 'rms_error: %.4f\nweighted_rms_error: %.4e\nfval: %.4e\n', rms_error, weighted_rms_error, fval);
+return
 
 %% Plotting
 % Complete
