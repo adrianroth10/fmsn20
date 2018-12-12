@@ -31,3 +31,29 @@ subplot(1, 2, 1)
 imagesc(reshape(y, [512, 512, 3]))
 subplot(1, 2, 2)
 imagesc(reshape(cl, [512, 512]))
+
+%%
+figure()
+x = rgbimage(reshape(p, [512,512,3]));
+subplot(1, 3, 1)
+imagesc(x(:,:,1))
+subplot(1, 3, 2)
+imagesc(x(:,:,2))
+subplot(1, 3, 3)
+imagesc(x(:,:,3))
+
+%% Parallel Gibbs sampling
+N1 = [0 1 0; 1 0 1; 0 1 0];
+N2 = [1 1 1; 1 0 1; 1 1 1];
+N3 = [0 0 0 1 1; 0 0 1 1 1; 0 1 0 1 0; 1 1 1 0 0; 1 1 0 0 0];
+x = zeros(128,128,3);
+iter = 100;
+Plog = zeros(iter,1);
+for i = 1:iter
+x=mrf_sim(x,N3,0,1,1);
+[~,Mz,Mf]=mrf_sim(x,N3,0,0.1,0);
+Plog(i) = sum(log(Mz(logical(x))));
+imagesc(x)
+drawnow
+end
+
