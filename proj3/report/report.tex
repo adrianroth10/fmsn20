@@ -1,0 +1,155 @@
+%% Dokumentinställningar börjar här
+
+\documentclass[a4paper,english]{article}
+%\usepackage{lmodern}
+\renewcommand{\sfdefault}{lmss}
+\renewcommand{\ttdefault}{cmtt}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[perpage,symbol]{footmisc}
+\usepackage[nottoc,numbib]{tocbibind}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{tocloft}
+\usepackage{fancyhdr}
+\setcounter{tocdepth}{2}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{babel}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{gensymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{verbatim}
+\usepackage{ulem}
+\usepackage{esint}
+\usepackage{icomma}     %% För att visa kommatecken i ekvationer korrekt
+\usepackage{bold-extra} %% Extra teckensnitt för att kunna kombinera textsc och textbf
+\usepackage{pdfpages}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{amsmath,mathdots}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{listingsutf8}
+\usepackage[framed,numbered]{matlab-prettifier}
+\usepackage{filecontents}
+\usepackage[left=3cm, right=3cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{slantsc}
+\onehalfspacing
+
+%%%%%%%%%%%%% - PDF-inställningar - %%%%%%%%%%%%%%
+\usepackage[unicode=true,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=true]
+ {hyperref}
+\hypersetup{pdftitle={GMRF\_home\_assignment\_3},
+ pdfauthor={Adrian Roth \& Anna Svensson},
+ pdfsubject={Home assignment 2}}
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%% - Referenser - %%%%%%%%%%%%%%%%%
+ \usepackage{csquotes}
+ \renewcommand{\thefootnote}{\arabic{footnote}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+
+%%%%%%%%%%%%%% - Fothuvud & Fotnot - %%%%%%%%%%%%%
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LO]{\scshape\nouppercase{Roth \& Svensson}}
+%\fancyhead[RE]{\scshape\nouppercase{Roth \& Svensson}}
+%\fancyhead[LE]{\scshape\nouppercase{\leftmark}}
+\fancyhead[RO]{\scshape\nouppercase{\rightmark}}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%% - Jakobs matteinställningar - %%%%%%%%%%
+\renewcommand\cftsecleader{\cftdotfill{\cftdotsep}}
+\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}
+\renewcommand\phi{\varphi}
+\renewcommand\epsilon{\varepsilon}
+\renewcommand\div{\mathrm{div}}
+\def\tg{\tan}
+\def\arctg{\arctan}
+\newcommand{\jvec}[1]{\boldsymbol{\vec{#1}}}
+\newcommand{\sexion}[1]{\section{#1}}
+\newcommand{\subsexion}[1]{\subsection{#1}}
+\newcommand{\subsubsexion}[1]{\subsubsection{#1}}
+\newcommand{\high}[1]{\text{\raisebox{0.6ex}{$#1$}}}
+\newcommand{\higher}[1]{\text{\raisebox{1.5ex}{$#1$}}}
+\renewcommand\lstlistingname{\textsc{Matlab}--fil}
+\renewcommand\lstlistlistingname{\textsc{Matlab}--filer}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%% CENTRERA STORA BILDER %%%%%%%%%%%%%%
+\makeatletter
+\newcommand*{\centerfloat}{%
+  \parindent \z@
+  \leftskip \z@ \@plus 1fil \@minus \textwidth
+  \rightskip\leftskip
+  \parfillskip \z@skip}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatother
+\renewcommand\refname{}
+%% Dokumentinställningar slutar här
+
+\begin{document}
+\afterpage{\cfoot{\thepage}}
+
+\title{\textit{{\textbf{\textsc{Spatial statistics with image analysis  \\ Home assignment 3 \\  MRF:s Classification}}}}}
+
+\author{Adrian Roth \& Anna Svensson}
+
+\maketitle
+\thispagestyle{empty}
+
+
+%\begin{center}
+%    \textbf{Handledare:} Florinda Vinas \\
+%    \textbf{Laborationen utförd:} 8 februari 2017 \\
+%\end{center}
+
+
+\pagebreak{}
+
+%\tableofcontents{}
+
+\thispagestyle{empty}
+
+\pagebreak{}
+
+\section{Introduction}
+
+\section{Theory}
+
+\section{Method}
+
+\section{Results and discussion}
+\newpage
+
+\begin{thebibliography}{37}
+  \bibitem{test} {\textbf{Test}}
+\end{thebibliography}
+\pagebreak{}
+
+\sexion{Appendix}
+
+
+
+%\subsection*{\textsc{Matlab} code}
+% \input{kod}
+
+
+\pagebreak{}
+\thispagestyle{empty}
+
+\end{document}

@@ -3,3 +3,8 @@
 *.jpg
 *.tar
 *.zip
+*.log
+*.aux
+*.out
+*.pdf
+*.synctex.gz
