@@ -1,0 +1,19 @@
+PCA
+	regression
+		olika antal covariater
+			Kmeans
+				olika antal klasser
+			gmm
+				olika antal klasser
+			MRF
+				olika antal klasser
+				olika neighbourhood
+	data
+		olika antal covariater
+			Kmeans
+				olika antal klasser
+			gmm
+				olika antal klasser
+			MRF
+				olika antal klasser
+				olika neighbourhood
