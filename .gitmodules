@@ -1,0 +1,3 @@
+[submodule "matrix2latex"]
+	path = matrix2latex
+	url = git@github.com:adrianroth10/matrix2latex.git
