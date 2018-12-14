@@ -39,6 +39,7 @@
 \usepackage{filecontents}
 \usepackage[left=3cm, right=3cm, top=2.5cm, bottom=2.5cm]{geometry}
 \usepackage{slantsc}
+\usepackage{epstopdf}
 \onehalfspacing
 
 %%%%%%%%%%%%% - PDF-inställningar - %%%%%%%%%%%%%%
@@ -142,7 +143,12 @@
 \pagebreak{}
 
 \sexion{Appendix}
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{../output/kmeans_1_2_1}
+  \caption{testing}
+  \label{fig:kmeans:1:2:1}
+\end{figure}
 
 
 %\subsection*{\textsc{Matlab} code}
