@@ -1,4 +1,4 @@
-[cl, theta] = kmeans(y_all, nc);
+[cl, theta] = kmeans(y_all_stacked, nc);
 
 figure();
 imagesc(reshape(cl, sz(1:2)));
