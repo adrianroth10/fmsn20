@@ -8,10 +8,10 @@ beta = X\colstack(img)';
 beta = reshape(beta', sz(1), sz(2), []);
 
 
-n_classes = [2];
+n_classes = [2 3];
 is_beta = true;
 data = beta;
-which_components = {[1]};
+which_components = {[1] [1,2]};
 proj3_pca
 return;
 

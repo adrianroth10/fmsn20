@@ -27,9 +27,16 @@ for i_neighbour = 1:length(N)
             theta{k}.mu = mu;
             theta{k}.Sigma = Sigma;
         end
-        [alpha, beta, acc] = gibbs_alpha_beta(alpha, beta, zmat, Mf, 10,1e5);
+        [alpha, beta, acc] = gibbs_alpha_beta(alpha, beta, zmat, Mf, 10);
     end
     Zmatrix(:,:,:,i_neighbour) = zmat;
+    figure();
+    imagesc(reshape(Zmatrix(:,1,nc,i_neighbour), sz(1:2)))
+    print(['proj3/output/mrf', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta),'_', num2str(i_neighbour), '.png'], '-dpng');
+    close;
 end
 
+
 plot(Plog)
+print(['proj3/output/mrf', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta), '.png'], '-dpng');
+close;
