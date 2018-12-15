@@ -36,7 +36,6 @@ for i_neighbour = 1:length(N)
     close;
 end
 
-
 plot(Plog)
 print(['proj3/output/mrf', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta), '.png'], '-dpng');
 close;
