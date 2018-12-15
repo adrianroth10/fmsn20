@@ -10,13 +10,13 @@ end
 
 zmat = zeros(sz(1), sz(2), nc);
 zsum = zeros(sz(1), sz(2), nc);
-alpha = zeros(nc, iterations + 1);
+alpha = zeros(iterations + 1, nc);
 beta = zeros(iterations + 1);
 Plog = zeros(iterations);
 acc = 0;
 
 for iter = 1:iterations
-    alpha_post = mrf_gaussian_post(alpha(:, iter)', theta, y_all);
+    alpha_post = mrf_gaussian_post(alpha(iter, :)', theta, y_all);
     zmat = mrf_sim(zmat, neighbours, alpha_post, beta(iter), 1);
     [~, Mz] = mrf_sim(zmat, neighbours, alpha_post, beta(iter), 0);
     Plog(iter) = sum(log(Mz(logical(zmat))));
@@ -25,8 +25,8 @@ for iter = 1:iterations
         theta{k}.mu = mu;
         theta{k}.Sigma = Sigma;
     end
-    [alpha(2:end, iter + 1), beta(iter + 1), acc_tmp] = ...
-                  gibbs_alpha_beta(alpha(2:end, iter)', beta(iter), zmat, neighbours, 10, 1e-2);
+    [alpha(iter + 1, 2:end), beta(iter + 1), acc_tmp] = ...
+                  gibbs_alpha_beta(alpha(iter, 2:end)', beta(iter), zmat, neighbours, 10, 1e-2);
     acc = acc + acc_tmp;
     if iter > burn_in
         zsum = zsum + zmat;
@@ -37,20 +37,20 @@ acc = acc / iterations
 
 figure();
 imagesc(xest);
-print(['proj3/output/mrf_', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta),'_', num2str(i_neighbours), '.png'], '-dpng');
+print(['proj3/output/mrf_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close;
 
 figure();
 plot(Plog);
-print(['proj3/output/mrf_plog_', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta),'_', num2str(i_neighbours), '.png'], '-dpng');
+print(['proj3/output/mrf_plog_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close;
 
 figure();
-plot(alpha);
-print(['proj3/output/mrf_alpha_', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta),'_', num2str(i_neighbours), '.png'], '-dpng');
+plot(alpha(1:iterations, :));
+print(['proj3/output/mrf_alpha_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close;
 
 figure();
-plot(beta);
-print(['proj3/output/mrf_beta_', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta),'_', num2str(i_neighbours), '.png'], '-dpng');
+plot(beta(1:iterations));
+print(['proj3/output/mrf_beta_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close;

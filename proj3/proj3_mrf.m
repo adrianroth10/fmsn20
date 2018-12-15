@@ -7,5 +7,5 @@ neighbours_set = {neighbours1};
 
 for i_neighbours = 1:length(neighbours_set)
     neighbours = neighbours_set{i_neighbours};
-    proj3_mrf_neighbours
+    proj3_mrf_neighbours;
 end

@@ -3,5 +3,5 @@
 
 figure();
 imagesc(reshape(cl, sz(1:2)));
-print(['proj3/output/gmm_', num2str(i_component), '_', num2str(nc), '_', num2str(is_beta), '.png'], '-dpng');
+print(['proj3/output/gmm_', num2str(is_beta), '_', str_components, '_', num2str(nc), '.png'], '-dpng');
 close;
