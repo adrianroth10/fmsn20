@@ -1,13 +1,16 @@
 [y_data, ~, P_data] = pca(colstack(data));
 
 for i_component = 1:length(which_components)
-  component = which_components{i_component};
+  components = which_components{i_component};
+  str_components = strrep(num2str(components), ' ', '');
   for nc = n_classes
-    y_all = y_data(:, component);
+    y_all_stacked = y_data(:, components);
+    y_all = reshape(y_all_stacked, sz(1), sz(2), []);
 
-%     proj3_kmeans;
-    proj3_gmm;
-   %proj3_mrf;
+    %proj3_kmeans;
+    %proj3_gmm;
+    proj3_mrf;
+
   end
 end
 
