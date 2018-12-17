@@ -114,41 +114,79 @@
 \thispagestyle{empty}
 
 
-%\begin{center}
-%    \textbf{Handledare:} Florinda Vinas \\
-%    \textbf{Laborationen utförd:} 8 februari 2017 \\
-%\end{center}
-
 
 \pagebreak{}
-
-%\tableofcontents{}
 
 \thispagestyle{empty}
 
 \pagebreak{}
 
 \section{Introduction}
+In the research field of image analysis the problem of pixel classification is a common problem.
+For example it can be a foreground background classification where it is interesting to classify which pixels are in the foreground and background respectively.
+The simple approaches are ones not concerning spatial dependence of pixel classes, i.e. a method which does is not concerned if pixels spatially close in an image are classified as different classes.
+In a real image it is reasonable and maybe even probable that this dependence exists.
+Therefore it might be interesting to use a spatial dependent model for the classification.
+
+In this assignment a sequence of fMRI images of an brain has been used.
+The sequence is images taken with 2 seconds intervals for 320 seconds total (160 frames).
+With a period of 40 seconds the patient either were trying to judge if a pair of words rhymed or rested.
+The goal of the measurement is to classify which parts of the brain are active during the rhyme assessment.
+There are two different versions of the data, one is the raw data explained above, the second one is a kind of regression of the data for each pixel to coefficients $\beta$ for different temporal functions.
+The data set is then simplified from 160 temporal layers to 11 coefficient layers.
+The first two temporal functions are constant and linear.
+The coefficients for these functions will extract information of constant brain intensity and linear head movement during the 360 seconds.
+The last eight functions are filters for the temporal intervals where the brain is active.
+This means that the corresponding coefficients in $\beta$ should have information of the active parts of the brain for this task, it should also be more dense here compared to the raw data.
+
+For the classification three different methods are tested.
+The K-means algorithm, Gaussian Mixture Model (GMM) and the Discrete Markov Random Field model (DMRF).
+Only the DMRF of these methods include spatial dependence, which should give it an advantage to the others.
+Especially since the data is connected to neuron intensities.
+For a simple model of the brain says that a neuron when active will send signals to neurons spatially close which have a higher probability of activating (SOURCE).
+Though all models will be tried with different parameters for a discussion of which one captures the most important information of the fMRI data.
 
 \section{Theory}
 
 \subsection{Kmeans}
 
-K-Means is a quick classification method where data is divided into clusters based on the assumption that there are equal amounts of all classes. For \textit{K} classes, \textit{K} points are selected at random which are the initial cluster centres. Each data point is assigned to the closest cluster centre. The mean of each cluster is calculated and interpreted as the new cluster centre. This is repeated until convergence. The main advantage of K-means is that it is fast and classifies directly, but the assumptions for which the method is based on are not entirely realistic. 
+K-Means is a quick classification method where data is divided into clusters based on the assumption that there are equal amounts of all classes. For \textit{K} classes, \textit{K} points are selected at random which are the initial cluster centres. Each data point is assigned to the closest cluster centre. The mean of each cluster is calculated and interpreted as the new cluster centre. This is repeated until convergence. The main advantage of K-means is that it is fast and classifies directly, but the assumptions for which the method is based on are not entirely realistic.
 
 
-\subsection{Gibbs}
+\subsection{Gaussian Mixture Model (GMM)}
+The GMM is can generally be found in classification problems.
+It is convenient since it includes different classes automatically in the model.
+The probability distribution is a sum of possibly multivariate normal distributions where each is multiplied by a normalizing constant as
+\begin{equation}
+  y | \theta \in \sum_{k = 0}^K \pi_k \mathcal{N}(\mu_k, \Sigma_k).
+  \label{eq:gmm}
+\end{equation}
+\theta includes all expected values $\mu_k$ and covariance matrices $\Sigma_k$ and $\pi_k$ is the normalizing constant which represents the prior abundance of each class relative to the other $[1..K]$ classes.
 
+The parameter maximum log likelihood estimation for assumed independent data is
+\begin{equation}
+  \hat{\theta} = \text{argmax}_{\theta} \sum{i = 1}^n \log \left(  \sum_{k=1}^K \pi_k p_G(y_i | \theta_k) \right)
+\end{equation}
+which is a hard problem.
+An easier one is to use a method from the Monte Carlo simulation field called Gibbs sampling.
+Here
 
+\subsection{Discrete Markov Random Field (DMRF)}
 
-\subsection{Markov Random Field (MRF)}
 
 \section{Method}
-
-
-
+In this assignment the three different models for classification mentioned above has been used on the fMRI data
+Initially they have been used to try and classify the subjectively visible parts of the image, background (outside of head), brain and no brain (including skull).
+Here the results have been analysed to see which one seems to be optimal.
+The rest of the analysis concerns the classification of the active parts of the brain.
+To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression is used.
+The assumption is made that all or at least a sufficient amount of the interesting data concerning the active parts of the brain are stored in these coefficients.
+All methods have been tried though a focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain intensity modelling.
+The parameters changed are number of classes for all methods, the neighbourhood structure and the structure of the $\beta$ parameter(s).
 
 \section{Results and discussion}
+
+
 \newpage
 
 \begin{thebibliography}{37}
