@@ -165,9 +165,9 @@ K-Means is a quick classification method where data is divided into clusters bas
 
 
 \subsection{Gaussian Mixture Model (GMM)}
-The GMM is can generally be found in classification problems.
+The GMM can generally be found in classification problems.
 It is convenient since it includes different classes automatically in the model.
-The probability distribution is a sum of possibly multivariate normal distributions where each is multiplied by a normalizing constant as
+The probability distribution is a sum of multivariate or univariate normal distributions where each is multiplied by a normalizing constant as
 \begin{equation}
   y | \theta \in \sum_{k = 0}^K \pi_k \mathcal{N}(\mu_k, \Sigma_k).
   \label{eq:gmm}
@@ -210,17 +210,17 @@ p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta f_{ix_i} }{
 The approximate log likelihood of $\alpha$ and $\beta$ is
 
 \begin{equation}
-	\text{log} PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \text{log}(\sum_k \text{exp}(\alpha_k + \beta f_{ik}))
+	\text{log} PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \text{log}(\sum_k \text{exp}(\alpha_k + \beta f_{ik})).
 \end{equation}
 
 
 
 \section{Method}
-In this assignment the three different models for classification mentioned above has been used on the fMRI data
+In this assignment the three different models for classification mentioned above has been used on the fMRI data.
 The work has been focused on analysing the classification of the active parts of the brain.
 To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression $\beta$ is used.
 The assumption is made that all or at least a sufficient amount of the interesting data concerning the active parts of the brain are stored in these coefficients.
-All methods have been tried to classify these though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain intensity modelling.
+All methods have been tried to classify these though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain activity intensity modelling.
 The parameters which have been optimized are: number of classes for all methods, the neighbourhood structure and the structure of the $\beta$ parameter(s).
 
 \section{Results and discussion}
