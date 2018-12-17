@@ -188,26 +188,26 @@ Secondly the parameters $\theta$ for the GMM is sampled conditional on the pixel
 
 \subsection{Discrete Markov Random Field (DMRF)}
 
-A Markov Random field is defined by \textbf{x} where \textbf{x} fulfills the Markov condition as in equation \ref{eq:markov} where $\mathcal{N}_i$ are neighbours to a point $\textbf{s}_i$. 
+A Markov Random field is defined by \textbf{x} where \textbf{x} fulfills the Markov condition as in equation \ref{eq:markov} where $\mathcal{N}_i$ are neighbours to a point $\textbf{s}_i$.
 
 \begin{equation}
 	p(x_i|\{x_j : j\neq i\}) = p(x_i|\{x_j : j\in \mathcal{N}_i\})
 	\label{eq:markov}
 \end{equation}
 
-The field is therefore dependent of other pixels. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from Gibbs distributions for which the Markov condition is based on. The conditional distribution becomes 
+The field is therefore dependent of other pixels. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from Gibbs distributions for which the Markov condition is based on. The conditional distribution becomes
 
 \begin{equation}
 p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = x_i))}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = k))}
 \end{equation}
 
-where $\alpha$ and $\beta$ are constant that describes how common a class \textit{k} is and how similar neighbours are. After rewriting the indicator field $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is  
- 
+where $\alpha$ and $\beta$ are constant that describes how common a class \textit{k} is and how similar neighbours are. After rewriting the indicator field $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is
+
 \begin{equation}
 p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta f_{ix_i} }{\sum^K_{k=1}\text{exp}(\alpha_k + \beta f_{ik})}.
 \end{equation}
 
-The approximate log likelihood of $\alpha$ and $\beta$ is 
+The approximate log likelihood of $\alpha$ and $\beta$ is
 
 \begin{equation}
 	\text{log} PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \text{log}(\sum_k \text{exp}(\alpha_k + \beta f_{ik}))
@@ -217,13 +217,11 @@ The approximate log likelihood of $\alpha$ and $\beta$ is
 
 \section{Method}
 In this assignment the three different models for classification mentioned above has been used on the fMRI data
-Initially they have been used to try and classify the subjectively visible parts of the image, background (outside of head), brain and no brain (including skull).
-Here the results have been analysed to see which one seems to be optimal.
-The rest of the analysis concerns the classification of the active parts of the brain.
-To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression is used.
+The work has been focused on analysing the classification of the active parts of the brain.
+To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression $\beta$ is used.
 The assumption is made that all or at least a sufficient amount of the interesting data concerning the active parts of the brain are stored in these coefficients.
-All methods have been tried though a focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain intensity modelling.
-The parameters changed are number of classes for all methods, the neighbourhood structure and the structure of the $\beta$ parameter(s).
+All methods have been tried to classify these though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain intensity modelling.
+The parameters which have been optimized are: number of classes for all methods, the neighbourhood structure and the structure of the $\beta$ parameter(s).
 
 \section{Results and discussion}
 
