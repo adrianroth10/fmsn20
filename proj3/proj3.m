@@ -17,14 +17,14 @@ region_of_interest = beta(:, :, 3:end);
 % close
 
 
-n_classes = [4,5];
-%which_components = {[1,2] [2,3] [2,3,4]};
-which_components = {[1,2]};
+n_classes = [5];
+which_components = {[1,2,3]};
+%which_components = {[3,4,5]};
 
 is_beta = true;
-data = beta;
+data = beta(:,:,3:end);
 proj3_pca
-return
+return;
 
 is_beta = false;
 data = img;

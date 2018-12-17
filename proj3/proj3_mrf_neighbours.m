@@ -1,12 +1,12 @@
 iterations = 1000;
 burn_in = 200;
 
-%[theta, ~] = normmix_gibbs(y_all, nc);
-theta = cell(nc,1);
-for k = 1:nc
-    theta{k}.mu = zeros(length(components),1);
-    theta{k}.Sigma = eye(length(components));
-end
+[theta, ~] = normmix_gibbs(colstack(y_all), nc);
+% theta = cell(nc,1);
+% for k = 1:nc
+%     theta{k}.mu = zeros(length(components),1);
+%     theta{k}.Sigma = eye(length(components));
+% end
 
 zmat = zeros(sz(1), sz(2), nc);
 zsum = zeros(sz(1), sz(2), nc);
@@ -21,12 +21,14 @@ for iter = 1:iterations
     [~, Mz] = mrf_sim(zmat, neighbours, alpha_post, beta(iter), 0);
     Plog(iter) = sum(log(Mz(logical(zmat))));
     for k = 1:nc
+        if sum(sum(zmat(:,:,k)))>=2
         [mu, Sigma] = gibbs_mu_sigma(y_all(logical(zmat(:, :, k))));
         theta{k}.mu = mu;
         theta{k}.Sigma = Sigma;
+        end
     end
     [alpha(iter + 1, 2:end), beta(iter + 1), acc_tmp] = ...
-                  gibbs_alpha_beta(alpha(iter, 2:end)', beta(iter), zmat, neighbours, 1e-1, 1e-2);
+                  gibbs_alpha_beta(alpha(iter, 2:end)', beta(iter), zmat, neighbours, 1e-1, 5e-1);
     acc = acc + acc_tmp;
     if iter > burn_in
         zsum = zsum + zmat;
