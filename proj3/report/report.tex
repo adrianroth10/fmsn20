@@ -147,6 +147,16 @@ For a simple model of the brain says that a neuron when active will send signals
 Though all models will be tried with different parameters for a discussion of which one captures the most important information of the fMRI data.
 
 \section{Theory}
+The goal of the models introduced is to estimate both the optimal parameters which are different for each model.
+The second part is to use these parameters to classify the pixels in the image.
+This is reffered to as the latent field $x$.
+$x$ is a grid with equal size as the image and each variable in the multivariate field has discrete values within the number of possible classes in the problem.
+The latent field is strongly connected to the indicator field $z$ where
+\begin{equation}
+  z_{ik} = \mathds{I}(x_i = k).
+\end{equation}
+$z$ has as many layers as there are classes and each layer is either $1$ or $0$ where the sum of all layers for each pixel equals to $1$.
+In other words, each pixel can only have one class.
 
 \subsection{Kmeans}
 
@@ -161,15 +171,19 @@ The probability distribution is a sum of possibly multivariate normal distributi
   y | \theta \in \sum_{k = 0}^K \pi_k \mathcal{N}(\mu_k, \Sigma_k).
   \label{eq:gmm}
 \end{equation}
-\theta includes all expected values $\mu_k$ and covariance matrices $\Sigma_k$ and $\pi_k$ is the normalizing constant which represents the prior abundance of each class relative to the other $[1..K]$ classes.
+$\theta$ includes all expected values $\mu_k$ and covariance matrices $\Sigma_k$ and $\pi_k$ is the normalizing constant which represents the prior abundance of each class relative to the other $[1..K]$ classes.
 
 The parameter maximum log likelihood estimation for assumed independent data is
 \begin{equation}
   \hat{\theta} = \text{argmax}_{\theta} \sum{i = 1}^n \log \left(  \sum_{k=1}^K \pi_k p_G(y_i | \theta_k) \right)
 \end{equation}
-which is a hard problem.
-An easier one is to use a method from the Monte Carlo simulation field called Gibbs sampling.
-Here
+which is a hard problem to solve.
+To make it easier we will use a method called Gibbs sampling to reduce the problem into two simpler sub problems.
+In general Gibbs sampling is a special case of a Markov Chain Monte Carlo (MCMC) method.
+The basic idea of the MCMC method is to instead of doing the hard problem you sample from a probability density which have the same stationary distribution as the unknown hard density.
+The Gibbs trick for this sampler is to divide the stochastic parameters into blocks where each block is sampled conditional on the rest.
+The two sub problems is to first sample from the pixel classification conditional on the parameters.
+Secondly the parameters $\theta$ for the GMM is sampled conditional on the pixel classes (Lecture 10 slide 17\cite{L10}).
 
 \subsection{Discrete Markov Random Field (DMRF)}
 
@@ -190,14 +204,15 @@ The parameters changed are number of classes for all methods, the neighbourhood 
 \newpage
 
 \begin{thebibliography}{37}
-  \bibitem{test} {\textbf{Test}}
+  \bibitem{L10}\textbf{Lecture L10} \\
+\url{http://www.maths.lth.se/matstat/kurser/fmsn20masm25//material_ht18/L10-1x3.pdf}
 \end{thebibliography}
 \pagebreak{}
 
 \sexion{Appendix}
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{../output/kmeans_1_2_1}
+  %\includegraphics[width=\linewidth]{../output/kmeans_1_2_1}
   \caption{testing}
   \label{fig:kmeans:1:2:1}
 \end{figure}
@@ -211,3 +226,7 @@ The parameters changed are number of classes for all methods, the neighbourhood 
 \thispagestyle{empty}
 
 \end{document}
+
+questions:
+What is latent field for DMRF?
+What is the pseudo in pseudo likelihood?
