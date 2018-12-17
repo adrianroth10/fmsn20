@@ -136,7 +136,7 @@ The goal of the measurement is to classify which parts of the brain are active d
 There are two different versions of the data, one is the raw data explained above, the second one is a kind of regression of the data for each pixel to coefficients $\beta$ for different temporal functions.
 The data set is then simplified from 160 temporal layers to 11 coefficient layers.
 The first two temporal functions are constant and linear.
-The coefficients for these functions will extract information of constant brain intensity and linear head movement during the 360 seconds.
+Coefficients for these functions will extract information of constant brain intensity and linear head movement during the 360 seconds.
 The last eight functions are filters for the temporal intervals where the brain is active.
 This means that the corresponding coefficients in $\beta$ should have information of the active parts of the brain for this task, it should also be more dense here compared to the raw data.
 
@@ -144,24 +144,23 @@ For the classification three different methods are tested.
 The K-means algorithm, Gaussian Mixture Model (GMM) and the Discrete Markov Random Field model (DMRF).
 Only the DMRF of these methods include spatial dependence, which should give it an advantage to the others.
 Especially since the data is connected to neuron intensities.
-For a simple model of the brain says that a neuron when active will send signals to neurons spatially close which have a higher probability of activating (SOURCE).
+For a simple model of the brain says that a neuron when active will send signals to neurons spatially close which have a higher probability of activating.
 Though all models will be tried with different parameters for a discussion of which one captures the most important information of the fMRI data.
 
 \section{Theory}
 The goal of the models introduced is to estimate both the optimal parameters which are different for each model.
 The second part is to use these parameters to classify the pixels in the image.
-This is reffered to as the latent field $x$.
-$x$ is a grid with equal size as the image and each variable in the multivariate field has discrete values within the number of possible classes in the problem.
-The latent field is strongly connected to the indicator field $z$ where
+This is referred to as the latent field $\boldsymbol{x}$.
+$\boldsymbol{x}$ is a grid with equal size as the image and each variable in the multivariate field has discrete values within the number of possible classes in the problem.
+The latent field is strongly connected to the indicator field $\boldsymbol{z}$ where
 \begin{equation}
   z_{ik} = \mathds{I}(x_i = k).
 \end{equation}
 $z$ has as many layers as there are classes and each layer is either $1$ or $0$ where the sum of all layers for each pixel equals to $1$.
 In other words, each pixel can only have one class.
 
-\subsection{Kmeans}
-
-K-Means is a quick classification method where data is divided into clusters based on the assumption that there are equal amounts of all classes. For \textit{K} classes, \textit{K} points are selected at random which are the initial cluster centres. Each data point is assigned to the closest cluster centre. The mean of each cluster is calculated and interpreted as the new cluster centre. This is repeated until convergence. The main advantage of K-means is that it is fast and classifies directly, but the assumptions for which the method is based on are not entirely realistic.
+\subsection{K-means}
+K-means is a quick classification method where data is divided into clusters based on the assumption that there are equal amounts of all classes. For \textit{K} classes, \textit{K} points are selected at random which are the initial cluster centres. Each data point is assigned to the closest cluster centre. The mean of each cluster is calculated and interpreted as the new cluster centre. This is repeated until convergence. The main advantage of K-means is that it is fast and classifies directly, but the assumptions for which the method is based on are not entirely realistic.
 
 
 \subsection{Gaussian Mixture Model (GMM)}
@@ -169,14 +168,14 @@ The GMM is can generally be found in classification problems.
 It is convenient since it includes different classes automatically in the model.
 The probability distribution is a sum of possibly multivariate normal distributions where each is multiplied by a normalizing constant as
 \begin{equation}
-  y | \theta \in \sum_{k = 0}^K \pi_k \mathcal{N}(\mu_k, \Sigma_k).
+  \boldsymbol{y} | \boldsymbol{\theta} \in \sum_{k = 0}^K \pi_k \mathcal{N}(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k).
   \label{eq:gmm}
 \end{equation}
-$\theta$ includes all expected values $\mu_k$ and covariance matrices $\Sigma_k$ and $\pi_k$ is the normalizing constant which represents the prior abundance of each class relative to the other $[1..K]$ classes.
+$\boldsymbol{\theta}$ includes all expected values $\boldsymbol{\mu}_k$ and covariance matrices $\boldsymbol{\Sigma}_k$ and $\pi_k$ is the normalizing constant which represents the prior abundance of each class relative to the other $[1..K]$ classes.
 
 The parameter maximum log likelihood estimation for assumed independent data is
 \begin{equation}
-  \hat{\theta} = \text{argmax}_{\theta} \sum{i = 1}^n \log \left(  \sum_{k=1}^K \pi_k p_G(y_i | \theta_k) \right)
+  \hat{\boldsymbol{\theta}} = \text{argmax}_{\boldsymbol{\theta}} \sum_{i = 1}^n \log \left(  \sum_{k=1}^K \pi_k p_G(y_i | \boldsymbol{\theta}_k) \right)
 \end{equation}
 which is a hard problem to solve.
 To make it easier we will use a method called Gibbs sampling to reduce the problem into two simpler sub problems.
@@ -184,33 +183,32 @@ In general Gibbs sampling is a special case of a Markov Chain Monte Carlo (MCMC)
 The basic idea of the MCMC method is to instead of doing the hard problem you sample from a probability density which have the same stationary distribution as the unknown hard density.
 The Gibbs trick for this sampler is to divide the stochastic parameters into blocks where each block is sampled conditional on the rest.
 The two sub problems is to first sample from the pixel classification conditional on the parameters.
-Secondly the parameters $\theta$ for the GMM is sampled conditional on the pixel classes (Lecture 10 slide 17\cite{L10}).
+Secondly the parameters $\boldsymbol{\theta}$ for the GMM is sampled conditional on the pixel classes (Lecture 10 slide 17\cite{L10}).
 
 \subsection{Discrete Markov Random Field (DMRF)}
 
-A Markov Random field is defined by \textbf{x} where \textbf{x} fulfills the Markov condition as in equation \ref{eq:markov} where $\mathcal{N}_i$ are neighbours to a point $\textbf{s}_i$.
+A Markov Random field is defined by \textbf{x} where \textbf{x} fulfils the Markov condition as in equation \ref{eq:markov} where $\mathcal{N}_i$ are neighbours to a point $\textbf{s}_i$.
 
 \begin{equation}
 	p(x_i|\{x_j : j\neq i\}) = p(x_i|\{x_j : j\in \mathcal{N}_i\})
 	\label{eq:markov}
 \end{equation}
 
-The field is therefore dependent of other pixels. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from Gibbs distributions for which the Markov condition is based on. The conditional distribution becomes
+The field is therefore dependent of other spatially neighbouring pixels. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides (Lecture 11, slides 3-8\cite{L11}) the conditional distribution of $x_i$ is derived from Gibbs distribution which fulfils the Markov condition. The conditional distribution becomes
 
 \begin{equation}
 p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = x_i))}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = k))}
 \end{equation}
-
 where $\alpha$ and $\beta$ are constant that describes how common a class \textit{k} is and how similar neighbours are. After rewriting the indicator field $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is
 
 \begin{equation}
-p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta f_{ix_i} }{\sum^K_{k=1}\text{exp}(\alpha_k + \beta f_{ik})}.
+  p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta f_{ix_i} }{\sum^K_{k=1}\text{exp}(\alpha_k + \beta f_{ik})}).
 \end{equation}
 
 The approximate log likelihood of $\alpha$ and $\beta$ is
 
 \begin{equation}
-	\text{log} PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \text{log}(\sum_k \text{exp}(\alpha_k + \beta f_{ik}))
+  \log PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \log\left(\sum_k \text{exp}(\alpha_k + \beta f_{ik})\right).
 \end{equation}
 
 
@@ -231,6 +229,8 @@ The parameters which have been optimized are: number of classes for all methods,
 \begin{thebibliography}{37}
   \bibitem{L10}\textbf{Lecture L10} \\
 \url{http://www.maths.lth.se/matstat/kurser/fmsn20masm25//material_ht18/L10-1x3.pdf}
+  \bibitem{L11}\textbf{Lecture L11} \\
+\url{http://www.maths.lth.se/matstat/kurser/fmsn20masm25//material_ht18/L11-1x3.pdf}
 \end{thebibliography}
 \pagebreak{}
 
