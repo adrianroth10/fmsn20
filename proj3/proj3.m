@@ -9,6 +9,12 @@ sz = size(img);
 
 beta = X\colstack(img)';
 beta = reshape(beta', sz(1), sz(2), []);
+region_of_interest = beta(:, :, 3:end);
+
+% imagesc(mean(region_of_interest, 3))
+% colorbar;
+% print('proj3/output/meanactivity.png', '-dpng');
+% close
 
 
 n_classes = [4,5];
