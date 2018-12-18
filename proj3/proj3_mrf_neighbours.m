@@ -1,5 +1,6 @@
 function proj3_mrf_neighbours(y_all, y_all_stacked, sz, neighbours, is_beta, i_component, str_components, nc, i_neighbours, MHsigma2)
 rng(0)
+
 iterations = 1000;
 burn_in = 300;
 

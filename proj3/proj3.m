@@ -33,4 +33,3 @@ return;
 is_beta = false;
 data = img;
 proj3_pca
-
