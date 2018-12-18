@@ -35,7 +35,7 @@ for iter = 1:iterations
         end
     end
     [alpha(iter + 1, :), beta(iter + 1, :), acc_tmp] = ...
-                  gibbs_alpha_beta(alpha(iter, :), beta(iter, :), zmat, neighbours, beta_prior, MHsigma2(i_component, nc - 1) / i_neighbours^3 / (2 - single_beta));
+                  gibbs_alpha_beta(alpha(iter, :), beta(iter, :), zmat, neighbours, beta_prior, MHsigma2(i_component, nc - 1, i_neighbours) / (2 - single_beta));
     acc = acc + acc_tmp;
     if iter > burn_in
         zsum = zsum + zmat;
