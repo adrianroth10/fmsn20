@@ -12,7 +12,7 @@ for i_component = 1:length(which_components)
 
     %proj3_kmeans(y_all_stacked, sz, is_beta, str_components, nc);
     %proj3_gmm(y_all_stacked, sz, is_beta, str_components, nc);
-    proj3_mrf(y_all, y_all_stacked, sz, is_beta, i_component, str_components, nc, MHsigma2) ;
+    proj3_mrf(y_all, y_all_stacked, sz, is_beta, length(components), str_components, nc, MHsigma2) ;
 
   end
 end
