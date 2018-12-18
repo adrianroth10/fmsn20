@@ -38,8 +38,8 @@ matrix2latex('proj3/output/mhsigman1.tex', MHsigma2N2);
 MHsigma2All(:, :, 1) = MHsigma2N1;
 MHsigma2All(:, :, 2) = MHsigma2N2;
 
-which_components = {[1], [1,2], [1,2,3],[1,2,3,4]};
-n_classes = [2,3,4];
+which_components = {[1], [1,2], [1,2,3],[1,2,3,4], [1,2,3,4,5]};
+n_classes = [2,3,4,5,6,7];
 
 data = region_of_interest;
 proj3_pca(sz, which_components, n_classes, data, MHsigma2All);
