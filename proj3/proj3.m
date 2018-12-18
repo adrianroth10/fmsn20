@@ -45,7 +45,7 @@ MHsigma2N2 = [1.1e-2, 0.4e-2, 0.3e-2    ;
               1.1e-3, 1.0e-3, 1.0e-3   ;
               1.0e-3, 1.0e-3, 1.0e-3  ;
               0.9e-3, 0.9e-3, 0.9e-3];
-matrix2latex('proj3/output/mhsigman1.tex', MHsigma2N2);
+matrix2latex('proj3/output/mhsigman2.tex', MHsigma2N2);
 MHsigma2All(:, :, 1) = MHsigma2N1;
 MHsigma2All(:, :, 2) = MHsigma2N2;
 
