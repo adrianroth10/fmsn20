@@ -1,4 +1,4 @@
-function proj3_mrf_neighbours(y_all, y_all_stacked, sz, neighbours, is_beta, i_component, str_components, nc, i_neighbours, MHsigma2)
+function proj3_mrf_neighbours(y_all, y_all_stacked, sz, neighbours, i_component, str_components, nc, i_neighbours, MHsigma2)
 rng(0)
 
 iterations = 1000;
@@ -38,32 +38,33 @@ end
 acc = acc / iterations;
 fprintf(1, 'acceptance rate = %.4f\n', acc);
 
+matrix2latex(['proj3/output/acceptance_rate_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.tex'], acc);
 [zest, xest] = max(zsum / iterations, [], 3);
 
 figure();
 imagesc(xest);
-print(['proj3/output/mrf_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
+print(['proj3/output/mrf_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close
 
-% figure();
-% plot(Plog);
-% xlabel('Gibbs iteration')
-% ylabel('pseudo log likelihood of field')
-% print(['proj3/output/mrf_plog_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
-% close
+figure();
+plot(Plog);
+xlabel('Gibbs iteration')
+ylabel('pseudo log likelihood of field')
+print(['proj3/output/mrf_plog_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
+close
 
 figure();
 plot(alpha(1:iterations, :));
 xlabel('Gibbs iteration')
 ylabel('\alpha values')
-print(['proj3/output/mrf_alpha_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
+print(['proj3/output/mrf_alpha_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close
 
 figure();
 plot(beta(1:iterations));
 xlabel('Gibbs iteration')
 ylabel('\beta values')
-print(['proj3/output/mrf_beta_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
+print(['proj3/output/mrf_beta_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close
 
 end
