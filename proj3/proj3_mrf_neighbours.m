@@ -15,7 +15,6 @@ beta = zeros(iterations + 1);
 Plog = zeros(iterations);
 acc = 0;
 
-fprintf(1, 'MHsigma2 = %.6f\n', MHsigma2(i_component, nc - 1));
 for iter = 1:iterations
     alpha_post = mrf_gaussian_post(alpha(iter, :), theta, y_all);
     zmat = mrf_sim(zmat, neighbours, alpha_post, beta(iter), 1);
