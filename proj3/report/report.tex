@@ -132,6 +132,7 @@ Therefore it might be interesting to use a spatial dependent model for the class
 In this assignment a sequence of fMRI images of an brain has been used.
 The sequence contains images taken with 2 seconds intervals for 320 seconds total (160 frames).
 In the experiment the patient was either trying to judge if a pair of words rhymed for 20 seconds or rested for 20 seconds.
+An example image of the brain when active and inactive respectively is found in Figure \ref{fig:intro:vis}.
 The goal of the measurement is to classify which parts of the brain are active during the rhyme assessment.
 There are two different versions of the data, one is the raw data explained above, the second one is a kind of regression of the data for each pixel to coefficients $\beta$ corresponding to different temporal functions.
 The data set is then simplified from 160 temporal layers to 11 coefficient layers.
@@ -146,6 +147,14 @@ Only the DMRF method include spatial dependence, which should give it an advanta
 Especially since the data is connected to neuron intensities.
 For a simple model of the brain a neuron when active will send signals to neurons spatially close which have a higher probability of activating.
 However, all models will be applied with different parameters for a discussion of which one captures the most important information of the fMRI data.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.49\textwidth]{../output/visualize1}
+  \includegraphics[width=0.49\textwidth]{../output/visualize2}
+  \caption{A visualisation of two data time frames. The left one is taken when the patient is actively trying to find rhymes and the right one is for an inactive part. No clear difference can be seen in these images.}
+  \label{fig:intro:vis}
+\end{figure}
 
 \section{Theory}
 The goal of the models introduced is to estimate both the optimal parameters for each model.
@@ -214,26 +223,26 @@ To the following posterior for $\boldsymbol{x}$ includes the data in the model,
 \end{equation}
 $\boldsymbol{\theta}$ in this case will include the parameters for the GMM of the data model.
 
-To optimize all parameters, $\boldsymbol{\alpha}$, $\boldsymbol{\beta}$ and GMM parameters a Gibbs sampling approach is used.
+To optimize all parameters, $\boldsymbol{\alpha}$, $\boldsymbol{\beta}$ and GMM parameters, a Gibbs sampling approach is used.
 The blocks are:
 \begin{itemize}
-  \item The indicator field $z$. It is updated using a DMRF sampling method.
+  \item The indicator field $\boldsymbol{z}$. It is updated using a DMRF sampling method.
   \item The data GMM parameters are updated using the same approach as in the GMM Gibbs sampler.
-  \item The $\alpha$ and $\beta$ are updated using a random walk Metropolis Hastings sampling.
+  \item The $\alpha$:s and $\beta$:s are updated using a random walk Metropolis Hastings sampling.
     The samples are drawn from a distribution with a certain variance $\sigma_{MH}^2$.
-    Then it is chosen if the sample is accepted through a likelihood calculation.
-    This variance should be just right to get a general acceptance rate around $0.3$.
-    It should also be the case of good mixing, explained in Lecture 12, slide 21\cite{L12}.
+    This sample is is either accepted or disregarded through a likelihood calculation.
+    The variance $\sigma_{MH}^2$ should be just right to get a ``good'' acceptance rate around $0.3$.
+    It should also be the case of good mixing, visualized in Lecture 12, slide 21\cite{L12}.
 \end{itemize}
-The sampler will only after a burn in period sample all parameters from the correct distribution, this means that all samples in the burn in are extinguished and the remaining ones are used to estimate the parameters expected values.
+The sampler will only after a period of burn in samples, sample the parameters from the correct distribution, this means that all samples in the burn in are extinguished and the samples afterwards are used to estimate the parameters expected values.
 
 
 \section{Method}
 In this assignment the three different models for classification mentioned above has been used on the fMRI data.
-The work has been focused on analysing the classification of the active parts of the brain.
+The work has been focused on analysing the classification of the active parts of the brain which is hard to find just from the images in Figure \ref{fig:intro:vis}.
 To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression $\beta$ is used.
-The assumption is made that all or at least a sufficient amount of the interesting data concerning the active parts of the brain are stored in these coefficients.
-All methods have been tried to classify these though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain activity intensity modelling.
+The assumption is made that all or at least a sufficient amount of the interesting data concerning the experimental active parts of the brain are stored in these coefficients.
+All methods have been tried to classify the data though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain activity intensity modelling.
 The parameters which have been optimized are:
 \begin{itemize}
   \item Number of classes for all methods.
@@ -254,7 +263,7 @@ It can be explained by having a lot of classes for data that mainly shows active
 
  discussion of $alpha$:s and $\beta$:s which seemed to be better for few classes, and from visual results of the classification where, from our point of view, the active parts had been best classified for few classes.
 
- We decided to use four principal components from observing the eigenvalues gained from the principal component analysis, see figure \ref{fig:pca}. The first eigenvalues are the most significant and as a second reason we chose four to limit the combinations. The last mentioned is also why only two neighbourhood structures and versions of beta parameters were used.  
+ We decided to use four principal components from observing the eigenvalues gained from the principal component analysis, see figure \ref{fig:pca}. The first eigenvalues are the most significant and as a second reason we chose four to limit the combinations. The last mentioned is also why only two neighbourhood structures and versions of beta parameters were used.
 Using the same $\sigma_{MH}^2$ for both $\beta$ structures seemed to give okay results, while it was problematic for the different neighbourhood structures. 12 $\sigma_{MH}^2$ were tuned for each neighbourhood structure, resulting in 24 different parameters to be manually optimized.
 We say that a good $\sigma_{MH}^2$ is one that results in acceptance rate of $0.3 \pm 0.1$.
 The $\sigma_{MH}^2$:s and the corresponding acceptance rate is found in Tables \dots and \dots there seems to be some connection with lower $\sigma_{MH}^2$ and more principal components.

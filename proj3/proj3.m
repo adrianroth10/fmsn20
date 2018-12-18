@@ -8,6 +8,17 @@ beta = X\colstack(img)';
 beta = reshape(beta', sz(1), sz(2), []);
 region_of_interest = beta(:, :, 3:end);
 
+visfile ='proj3/output/visualize1.png';
+if exist(visfile, 'file') == 0
+  imagesc(img(:, :, 1))
+  colorbar;
+  print(visfile, '-dpng');
+  imagesc(img(:, :, 10))
+  colorbar;
+  print('proj3/output/visualize2.png', '-dpng');
+  close
+end
+
 meanfile ='proj3/output/meanactivity.png';
 if exist(meanfile, 'file') == 0
   imagesc(mean(region_of_interest, 3))
