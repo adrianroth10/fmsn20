@@ -9,5 +9,8 @@
 *.pdf
 *.synctex.gz
 *.png
+*.nav
+*.toc
+*.snm
 
 proj3/output

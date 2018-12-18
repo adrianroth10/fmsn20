@@ -1,0 +1,137 @@
+\documentclass[12pt, english]{beamer}
+\renewcommand{\sfdefault}{lmss}
+\renewcommand{\ttdefault}{cmtt}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[perpage,symbol]{footmisc}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{babel}
+\usepackage{setspace}
+\usepackage{color}
+\usepackage{gensymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{verbatim}
+\usepackage{ulem}
+\usepackage{csquotes}
+\usepackage{bold-extra}
+\usetheme{Berlin}
+\usepackage{thumbpdf}
+\usepackage{wasysym}
+\usepackage{ucs}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{multicol}
+\usepackage{caption}
+
+\pdfinfo
+{
+  /Title       (Classification)
+  /Creator     (TeX)
+  /Author      (Roth, Svensson)
+}
+
+\title{Classification of fMRI data}
+\subtitle{using MRFs and Gibbs (MCMC)}
+\author{Anna Svensson, Adrian Roth}
+%\date{December 2016}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section*{}
+\begin{frame}
+  \frametitle{fMRI data}
+  \tableofcontents[hidesubsections]
+\end{frame}
+
+
+\AtBeginSection[]
+{  \frame<handout:0>
+  {\frametitle{Översikt}   \tableofcontents[currentsection,hideallsubsections]}}
+\AtBeginSubsection[]
+{  \frame<handout:0>
+  {\frametitle{Översikt}
+    \tableofcontents[sectionstyle=show/hide,subsectionstyle=show/shaded/hide]}}
+\newcommand<>{\highlighton}[1]{%
+  \alt#2{\structure{#1}}{{#1}}
+}
+
+\newcommand{\icon}[1]{\pgfimage[height=1em]{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% Content starts here %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\section{}
+
+\begin{frame}
+  \frametitle{}
+  \framesubtitle{}
+  
+  
+  \begin{block}{}
+  \begin{itemize}
+    \item 
+    \item 
+  \end{itemize}
+  \end{block}
+
+\end{frame}
+
+
+
+\section{}
+\begin{frame}
+  \frametitle{}
+  \framesubtitle{}
+
+%\begin{figure}
+%\centering
+%\includegraphics[width=\textwidth]{}
+%    \caption*{}
+%    \label{fig:}  
+%\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{References}
+  \framesubtitle{}
+  \begin{thebibliography}{10}
+
+  \beamertemplatearticlebibitems
+  
+  \bibitem{hand} 
+   Handledare Andreas Jansson, ESS
+  
+  \bibitem{cern}
+    CERN Document Server
+    \newblock {\tt https://cds.cern.ch/}
+
+
+  \end{thebibliography}
+\end{frame}
+
+\frame{
+  \vspace{2cm}
+  {\huge Questions?}
+
+  \vspace{3cm}
+  \begin{flushright}
+    Anna Svensson \& Adrian Roth
+
+%    \structure{\footnotesize{konqi@kde.org}}
+  \end{flushright}
+}
+
+\end{document}
