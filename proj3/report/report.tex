@@ -262,26 +262,59 @@ As mentioned in the Method section, the last nine covariate images were used for
     \label{fig:mean}
 \end{figure}
 
-
-
 For the quick method K-means the classification was made for 2-7 classes and for 1-5 covariate images. The results were not very good but gave an indicator of where the active parts were in the brain. Too many classes made the image so noisy that is was nearly impossible to distinguish the interesting parts. An example of the best results is found in Figure \ref{fig:kmeans}.
 
+\begin{figure}[H]
+	\centering
+    \includegraphics[width = 0.7\linewidth]{../output/kmeans_1_3}
+    \caption{}
+    \label{fig:kmeans}
+\end{figure}
 
+The Gaussian Mixture Model was used with the same classes and covariates as K-means. The results were slightly less noisy but for most of the combinations, you need to know where to look to actually see the active parts. One of the best images can be seen in Figure \ref{fig:gmm}.
+
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width = 0.7\linewidth]{../output/gmm_1_6}
+    \caption{}
+    \label{fig:gmm}
+\end{figure}
 
 
 In the DMRF Gibbs sampling for optimizing the parameters there is as mentioned a Metropolis Hastings sampling stage with a variance parameter  $\sigma_{MH}^2$.
-The optimum of this parameter, concerning acceptance rate (around $0.3$) and good mixing, is dependent on all of the parameters named in the Method section. %%%%%%
+The optimum of this parameter, concerning acceptance rate (around $0.3$) and good mixing, is dependent on all of the parameters named in the Method section.
 This means that is should be optimized for each and every one of them.
 Trying $n$ multiple ones of each results in combinations that gets larger with $n^4$ and to optimize these is an unreasonable task for large $n$.
-In the end we chose 3 different number of classes, 4 number of principal components, 2 neighbourhood structures and 2 versions of the beta parameter, this gives 48 different $\sigma_{MH}^2$ to be optimized. The limitation of classes was based on visual assessments, seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the one in \ref{fig:test} and ... it seemed as though the $\alpha$:s were more stationary for the runs with few classes. They did not really converge to a value but they did converge around a value. Where many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made.
-It can be explained by having a lot of classes for data that mainly shows active and non-active areas makes it hard to classify more than two types of data. If there is no other obvious classes the classifier will try to classify similar data and this will make $\alpha$ vary a lot since the classification is easily overwritten in the iterations. The $\beta$:s converged quickly in general, especially if many covariate images were used. Where many classes were used it converged slowly, in particular for few covariate images. It makes sense since with a similar explanation as for the $alpha$:s, the classes are overwritten a lot of times, making the $\beta$:s vary. With many covariates, more data is given which could explain why it converges quickly, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided. The pseudo log likelihood is slightly bigger for few classes used, independent of how many covariates. This in addition to the discussion above suggests that it might be a good idea to use few classes for the evaluation. Visual results of the classification also showed that, from our point of view, the active parts had been best classified for few classes.
+In the end we chose 3 different number of classes, 4 number of principal components, 2 neighbourhood structures and 2 versions of the beta parameter, this gives 48 different $\sigma_{MH}^2$ to be optimized. The limitation of classes was based on visual assessments, seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the ones in Figure \ref{fig:alphabeta} it seemed as though the $\alpha$:s were more stationary for the runs with few classes. They did not really converge to a value but they did converge around a value. Where many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made.
+It can be explained by having a lot of classes for data that mainly shows active and non-active areas makes it hard to classify more than two types of data. If there is no other obvious classes the classifier will try to classify similar data and this will make $\alpha$ vary a lot since the classification is easily overwritten in the iterations. The $\beta$:s converged quickly in general, especially if many covariate images were used. Where many classes were used it converged slowly, in particular for few covariate images. It makes sense since with a similar explanation as for the $alpha$:s, the classes are overwritten a lot of times, making the $\beta$:s vary. With many covariates, more data is given which could explain why it converges quickly, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided. The pseudo log likelihood is slightly bigger for few classes used, independent of how many covariates. This in addition to the discussion above suggests that it might be a good idea to use few classes for the evaluation. Visual results of the classification also showed that, from our point of view, the active parts had been best classified for few classes. An example of the results using two classes is found in Figure \ref{fig:mrf}.
 
 We decided to use four principal components from observing the eigenvalues gained from the principal component analysis, see figure \ref{fig:pca}. The first eigenvalues are the most significant and as a second reason we chose four to limit the combinations. The last mentioned is also why only two neighbourhood structures and versions of beta parameters were used.
 Using the same $\sigma_{MH}^2$ for both $\beta$ structures seemed to give okay results, while it was problematic for the different neighbourhood structures. 12 $\sigma_{MH}^2$ were tuned for each neighbourhood structure, resulting in 24 different parameters to be manually optimized.
 We say that a good $\sigma_{MH}^2$ is one that results in acceptance rate of $0.3 \pm 0.1$.
 The $\sigma_{MH}^2$:s and the corresponding acceptance rate is found in Tables \dots and \dots there seems to be some connection with lower $\sigma_{MH}^2$ and more principal components.
 
+\begin{figure}[H]
+	\centering
+    \includegraphics[width = 0.7\linewidth]{../output/pdata}
+    \caption{The eigenvalues of the principal component analysis shows that the first few components are most significant.}
+    \label{fig:pca}
+\end{figure}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.49\textwidth]{../output/mrf_alpha_12_2_2_1}
+  \includegraphics[width=0.49\textwidth]{../output/mrf_beta_12_2_2_1}
+  \caption{}
+  \label{fig:alphabeta}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width = 0.7\linewidth]{../output/mrf_12_2_2_1}
+    \caption{}
+    \label{fig:mrf}
+\end{figure}
 
 
 \newpage
