@@ -193,20 +193,28 @@ A Discrete Markov Random field is defined by \textbf{x} where \textbf{x} fulfils
 	\label{eq:markov}
 \end{equation}
 For gridded data neighbours can for example be the four closest or the eight closest neighbours to a pixel.
-The field is therefore dependent of other pixels. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from Gibbs distributions for which the Markov condition is based on. The conditional distribution becomes
+The field is therefore includes a spatial dependence. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from the Gibbs distribution which includes the Markov condition. The conditional distribution is
 \begin{equation}
-p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = x_i))}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = k))}
+  p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta_{(x_i)}\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = x_i))}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta_{(k)}\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = k))}
 \end{equation}
-where $\alpha$ and $\beta$ are constant that describes how common a class \textit{k} is and how similar neighbours are. After rewriting the indicator field $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is
+where $\alpha$ and is connected to how common a class \textit{k} is and $\beta_{(k)}$ is how similar neighbours in the same class $k$ are. The parenthesis around $x_i$ or $k$ in $\beta$ is explained by that the model can either have one $\beta$ for all classes or one for either one. After rewriting the indicator field as $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is
 \begin{equation}
-p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta f_{ix_i} }{\sum^K_{k=1}\text{exp}(\alpha_k + \beta f_{ik})}.
+  p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta_{(x_i)} f_{ix_i})}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta_{(k)} f_{ik})}.
 \end{equation}
 The approximate log likelihood of $\alpha$ and $\beta$ is
 \begin{equation}
-	\log PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \log(\sum_k \text{exp}(\alpha_k + \beta f_{ik})).
+  \log PL_z(\boldsymbol{\alpha},\beta) = \sum_k \sum_i \alpha_{k} z_{ik} + \sum_k \beta_{(k)} \sum_i z_{ik}f_{ik} - \log(\sum_k \exp(\alpha_{k} + \beta_{(k)} f_{ik})).
 \end{equation}
+To the following posterior for $\boldsymbol{x}$ includes the data in the model,
+\begin{equation}
+  \begin{split}
+    p(x_i|x_j,j\in \mathcal{N}_i, \boldsymbol{y}, \boldsymbol{\theta}) &\propto \exp (\tilde{\alpha}_{i, x_i}+\beta_{x_i} f_{ix_i}), \\
+    \tilde{\alpha}_{i, x_i} &= \alpha_k + \log p(y_i | x_i = k, \boldsymbol{\theta}).
+  \end{split}
+\end{equation}
+$\boldsymbol{\theta}$ in this case will include the parameters for the GMM of the data model.
 
-To optimize all parameters a Gibbs sampling approach is used.
+To optimize all parameters, $\boldsymbol{\alpha}$, $\boldsymbol{\beta}$ and GMM parameters a Gibbs sampling approach is used.
 The blocks are:
 \begin{itemize}
   \item The indicator field $z$. It is updated using a DMRF sampling method.
