@@ -11,8 +11,8 @@ burn_in = 300;
 zmat = reshape(cl_ind, sz(1), sz(2), []);
 zsum = zeros(sz(1), sz(2), nc);
 alpha = ones(iterations + 1, nc) / nc;
-beta = zeros(iterations + 1);
-Plog = zeros(iterations);
+beta = zeros(iterations + 1,1);
+Plog = zeros(iterations,1);
 acc = 0;
 
 for iter = 1:iterations
