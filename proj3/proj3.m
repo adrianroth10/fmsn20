@@ -16,13 +16,18 @@ region_of_interest = beta(:, :, 3:end);
 % print('proj3/output/meanactivity.png', '-dpng');
 % close
 
+MHsigma2 = [0, 0, 0, 0, 0;
+            0, 0, 0, 0, 0;
+            0, 0, 0, 0, 0;
+            0, 0, 0, 0, 0;
+            0, 0, 0, 0, 0;
+            0, 0, 0, 0, 0];
 
-n_classes = [5];
-which_components = {[1,2,3]};
-%which_components = {[3,4,5]};
+n_classes = [2, 3, 4, 5, 6, 7];
+which_components = {[1], [1,2], [1,2,3], [1,2,3,4], [1,2,3,4,5]};
 
 is_beta = true;
-data = beta(:,:,3:end);
+data = beta(:, :, 3:end);
 proj3_pca
 return;
 
