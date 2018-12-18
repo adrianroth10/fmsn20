@@ -1,3 +1,5 @@
+function proj3_mrf_neighbours(y_all, y_all_stacked, sz, neighbours, is_beta, i_component, str_components, nc, i_neighbours, MHsigma2)
+
 iterations = 1000;
 burn_in = 300;
 
@@ -26,7 +28,7 @@ for iter = 1:iterations
         end
     end
     [alpha(iter + 1, 2:end), beta(iter + 1), acc_tmp] = ...
-                  gibbs_alpha_beta(alpha(iter, 2:end), beta(iter), zmat, neighbours, 1e-1, MHsigma2(i_component, nc));
+                  gibbs_alpha_beta(alpha(iter, 2:end), beta(iter), zmat, neighbours, 1e-1, MHsigma2(i_component, nc - 1));
     acc = acc + acc_tmp;
     if iter > burn_in
         zsum = zsum + zmat;
@@ -62,3 +64,5 @@ xlabel('Gibbs iteration')
 ylabel('\beta values')
 print(['proj3/output/mrf_beta_', num2str(is_beta), '_', str_components, '_', num2str(nc), '_', num2str(i_neighbours), '.png'], '-dpng');
 close
+
+end
