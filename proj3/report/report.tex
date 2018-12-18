@@ -227,13 +227,20 @@ The blocks are:
 \end{itemize}
 The sampler will only after a burn in period sample all parameters from the correct distribution, this means that all samples in the burn in are extinguished and the remaining ones are used to estimate the parameters expected values.
 
+
 \section{Method}
 In this assignment the three different models for classification mentioned above has been used on the fMRI data.
 The work has been focused on analysing the classification of the active parts of the brain.
 To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression $\beta$ is used.
 The assumption is made that all or at least a sufficient amount of the interesting data concerning the active parts of the brain are stored in these coefficients.
 All methods have been tried to classify these though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain activity intensity modelling.
-The parameters which have been optimized are: number of classes for all methods, the neighbourhood structure and the structure of the $\beta$ parameter(s).
+The parameters which have been optimized are:
+\begin{itemize}
+  \item Number of classes for all methods.
+  \item Number of principal components used.
+  \item (Only for DMRF) The neighbourhood structure.
+  \item (Only for DMRF) One $\beta$ parameter in total or one for each class.
+\end{itemize}
 
 \section{Results and discussion}
 As seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the one in \ref{fig:test} and ... it seemed as though the $\alpha$:s were more stationary for the runs with few classes. They did not really converge to a value except the $\alpha$ that was put to zero, but they did converge around a value. Where many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made.
