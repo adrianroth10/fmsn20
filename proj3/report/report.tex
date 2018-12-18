@@ -207,12 +207,20 @@ where $\alpha$ and $\beta$ are constant that describes how common a class \texti
 p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta f_{ix_i} }{\sum^K_{k=1}\text{exp}(\alpha_k + \beta f_{ik})}.
 \end{equation}
 
-The approximate log likelihood of $\alpha$ and $\beta$ is
+The approximate log likelihood of $\alpha$ and $\beta$ where some spatial dependence is disregarded is
 
 \begin{equation}
 	\text{log} PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \text{log}(\sum_k \text{exp}(\alpha_k + \beta f_{ik})).
 \end{equation}
 
+To optimize all parameters a Gibbs sampling approach is used.
+The blocks are:
+\begin{itemize}
+  \item The indicator field $z$. It is updated using a DMRF sampling method.
+  \item The data GMM parameters are updated using the same approach as in the GMM Gibbs sampler.
+  \item The $\alpha$ and $\beta$ are updated using Metropolis Hastings sampling.
+    A certain
+\end{itemize}<++>
 
 
 \section{Method}
@@ -221,10 +229,34 @@ The work has been focused on analysing the classification of the active parts of
 To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression $\beta$ is used.
 The assumption is made that all or at least a sufficient amount of the interesting data concerning the active parts of the brain are stored in these coefficients.
 All methods have been tried to classify these though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain activity intensity modelling.
-The parameters which have been optimized are: number of classes for all methods, the neighbourhood structure and the structure of the $\beta$ parameter(s).
+The parameters which have been optimized are:
+\begin{itemize}
+  \item Number of classes for all methods.
+  \item Number of principal components used.
+  \item The neighbourhood structure.
+  \item (only for DMRF) One \beta parameter in total or one for each class.
+\end{itemize}
 
 \section{Results and discussion}
 
+
+In the DMRF Gibbs sampling for optimizing the parameters there is as mentioned a Metropolis Hastings sampling stage with a variance parameter  $\sigma_{MH}^2$.
+The optimum of this parameter, concerning acceptance rate (around $0.3$) and good mixing, is dependent on all of the parameters above.
+This means that is should be optimized for each and every one of them.
+With 5 different number of classes, 5 number of principal components, 3 neighbourhood structures and two versions of the beta parameter there are 150 different $\sigma_{MH}^2$ to be optimized.
+This is a pretty unreasonable task.
+Instead of doing this we chose to try and find patterns in how the $\sigma_{MH}^2$ is connected to the acceptance rate, not good mixing since it requires a more subjective measure.
+We say that a good $\sigma_{MH}^2$ is one that results in acceptance rate of $0.3 \pm 0.05$.
+Comparing them in Table \dots and \dots there seems to be some connection with lower $\sigma_{MH}^2$ and more principal components.
+Though this is not true for all combinations and from testing it is found that a lower $\sigma_{MH}^2$ not always results in larger acceptance rate which makes it hard to find a connection.
+Instead an interesting connection is found between the neighbourhood structure of the DMRF model and a good $\sigma_{MH}^2$
+The most interesting relation is found connected to the structure of the DMRF model.
+A good $\sigma_{MH4}^2$ is found for a 4 neighbourhood structure.
+For a 8 and 12 neighbourhood $\sigma_{MH4}^2 / 2^2$ and $\sigma_{MH4}^2 / 3^2$ respectively give good acceptance rate.
+Somehow a good Metropolis Hastings sampling $\sigma_{MH}^2$ scales with the inverse quadratic of the number of neighbours.
+This lowers the search space to ``only'' 50 different $\sigma_{MH}^2$.
+At last we found a connection that taking half of the $\sigma_{MH}^2$ when using one $\beta$ parameter for each class is will also in general give a good acceptance rate.
+\textcolor{white}{Bam}, only 25 combinations left which were optimized in Table \dots.
 
 \newpage
 
