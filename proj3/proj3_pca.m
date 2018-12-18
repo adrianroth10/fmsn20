@@ -18,9 +18,9 @@ for i_component = 1:length(which_components)
     y_all_stacked = y_data(:, components);
     y_all = reshape(y_all_stacked, sz(1), sz(2), []);
 
-    %proj3_kmeans(y_all_stacked, sz, str_components, nc);
+    proj3_kmeans(y_all_stacked, sz, str_components, nc);
     %proj3_gmm(y_all_stacked, sz, str_components, nc);
-    proj3_mrf(y_all, y_all_stacked, sz, length(components), str_components, nc, MHsigma2) ;
+    %proj3_mrf(y_all, y_all_stacked, sz, length(components), str_components, nc, MHsigma2) ;
 
   end
 end
