@@ -123,97 +123,101 @@
 \pagebreak{}
 
 \section{Introduction}
-In the research field of image analysis the problem of pixel classification is a common problem.
-For example it can be a foreground background classification where it is interesting to classify which pixels are in the foreground and background respectively.
-The simple approaches are ones not concerning spatial dependence of pixel classes, i.e. a method which does is not concerned if pixels spatially close in an image are classified as different classes.
+In the research field of image analysis the problem of pixel classification is a common.
+For example it can be a foreground-background classification where it is interesting to classify which pixels are in the foreground and background respectively.
+The simple approaches are ones not concerning spatial dependence of pixel classes, i.e. a method which is not concerned if pixels spatially close in an image are classified as different classes.
 In a real image it is reasonable and maybe even probable that this dependence exists.
 Therefore it might be interesting to use a spatial dependent model for the classification.
 
 In this assignment a sequence of fMRI images of an brain has been used.
-The sequence is images taken with 2 seconds intervals for 320 seconds total (160 frames).
-With a period of 40 seconds the patient was either trying to judge if a pair of words rhymed or rested.
+The sequence contains images taken with 2 seconds intervals for 320 seconds total (160 frames).
+In the experiment the patient was either trying to judge if a pair of words rhymed for 20 seconds or rested for 20 seconds.
 The goal of the measurement is to classify which parts of the brain are active during the rhyme assessment.
-There are two different versions of the data, one is the raw data explained above, the second one is a kind of regression of the data for each pixel to coefficients $\beta$ for different temporal functions.
+There are two different versions of the data, one is the raw data explained above, the second one is a kind of regression of the data for each pixel to coefficients $\beta$ corresponding to different temporal functions.
 The data set is then simplified from 160 temporal layers to 11 coefficient layers.
 The first two temporal functions are constant and linear.
 The coefficients for these functions will extract information of constant brain intensity and linear head movement during the 360 seconds.
 The last eight functions are filters for the temporal intervals where the brain is active.
-This means that the corresponding coefficients in $\beta$ should have information of the active parts of the brain for this task, it should also be more dense here compared to the raw data.
+This means that the corresponding coefficients in $\beta$ should have information of which parts of the brain are active for this task.
 
 For the classification three different methods are tested.
 The K-means algorithm, Gaussian Mixture Model (GMM) and the Discrete Markov Random Field model (DMRF).
-Only the DMRF of these methods include spatial dependence, which should give it an advantage to the others.
+Only the DMRF method include spatial dependence, which should give it an advantage to the others.
 Especially since the data is connected to neuron intensities.
-For a simple model of the brain says that a neuron when active will send signals to neurons spatially close which have a higher probability of activating (SOURCE).
-However, all models will be tried with different parameters for a discussion of which one captures the most important information of the fMRI data.
+For a simple model of the brain a neuron when active will send signals to neurons spatially close which have a higher probability of activating.
+However, all models will be applied with different parameters for a discussion of which one captures the most important information of the fMRI data.
 
 \section{Theory}
-The goal of the models introduced is to estimate both the optimal parameters which are different for each model.
+The goal of the models introduced is to estimate both the optimal parameters for each model.
 The second part is to use these parameters to classify the pixels in the image.
-This is referred to as the latent field $x$.
-$x$ is a grid with equal size as the image and each variable in the multivariate field has discrete values within the number of possible classes in the problem.
-The latent field is strongly connected to the indicator field $z$ where
+This classification is referred to as the discrete latent field $\boldsymbol{x}$.
+$\boldsymbol{x}$ is a grid with equal size as the image and each pixel variable in the field can have discrete values within the number of possible classes for the problem.
+The latent is field strongly connected to the indicator field $\boldsymbol{z}$ where
 \begin{equation}
   z_{ik} = \mathds{I}(x_i = k).
 \end{equation}
-$z$ has as many layers as there are classes and each layer is either $1$ or $0$ where the sum of all layers for each pixel equals to $1$.
+$\boldsymbol{z}$ has as many layers as there are classes and each layer is either $1$ or $0$ where the sum of all layers for each pixel equals to $1$.
 In other words, each pixel can only have one class.
 
-\subsection{Kmeans}
+\subsection{K-means}
 
-K-Means is a quick classification method where data is divided into clusters based on the assumption that there are equal amounts of all classes. For \textit{K} classes, \textit{K} points are selected at random which are the initial cluster centres. Each data point is assigned to the closest cluster centre. The mean of each cluster is calculated and interpreted as the new cluster centre. This is repeated until convergence. The main advantage of K-means is that it is fast and classifies directly, but the assumptions for which the method is based on are not entirely realistic.
-
+K-Means is a computationally fast classification method where data is divided into clusters based on the assumption that there are equal amounts of all classes, $\pi_k = 1 / k$ as in Lecture 9, slide 20\cite{L09}. For \textit{K} classes, \textit{K} points are selected at random which are the initial cluster centres. Each data point is assigned to the closest $L^2$ norm cluster centre. The mean of each cluster is calculated and interpreted as the new cluster centre. This is repeated until convergence. The main advantage of K-means is that it is fast, simple and classifies directly, but the assumptions for which the method is based on might often not be realistic for the problem.
 
 \subsection{Gaussian Mixture Model (GMM)}
-The GMM can generally be found in classification problems.
+The GMM can generally be found when dealing with classification problems.
 It is convenient since it includes different classes automatically in the model.
 The probability distribution is a sum of multivariate or univariate normal distributions where each is multiplied by a normalizing constant as
 \begin{equation}
-  y | \theta \in \sum_{k = 0}^K \pi_k \mathcal{N}(\mu_k, \Sigma_k).
+  \boldsymbol{y} | \boldsymbol{\theta} \in \sum_{k = 0}^K \pi_k \mathcal{N}(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k).
   \label{eq:gmm}
 \end{equation}
-$\theta$ includes all expected values $\mu_k$ and covariance matrices $\Sigma_k$ and $\pi_k$ is the normalizing constant which represents the prior abundance of each class relative to the other $[1..K]$ classes.
+$\boldsymbol{\theta}$ includes all expected values $\boldsymbol{\mu}_k$ and covariance matrices $\boldsymbol{\Sigma}_k$ and $\pi_k$ is the normalizing constant which represents the prior abundance of each class relative to the other $[1..K]$ classes.
 
 The parameter maximum log likelihood estimation for assumed independent data is
 \begin{equation}
-  \hat{\theta} = \text{argmax}_{\theta} \sum{i = 1}^n \log \left(  \sum_{k=1}^K \pi_k p_G(y_i | \theta_k) \right)
+  \hat{\boldsymbol{\theta}} = \text{argmax}_{\boldsymbol{\theta}} \sum_{i = 1}^n \log \left(  \sum_{k=1}^K \pi_k p_G(y_i | \boldsymbol{\theta}_k) \right)
 \end{equation}
 which is a hard problem to solve.
-To make it easier we will use a method called Gibbs sampling to reduce the problem into two simpler sub problems.
+To make it easier we will use a method called Gibbs sampling to reduce the problem into simpler sub problems.
 In general Gibbs sampling is a special case of a Markov Chain Monte Carlo (MCMC) method.
 The basic idea of the MCMC method is to instead of doing the hard problem you sample from a probability density which have the same stationary distribution as the unknown hard density.
-The Gibbs trick for this sampler is to divide the stochastic parameters into blocks where each block is sampled conditional on the rest.
+Though the samples are dependent a mean will still estimate expected value.
+The Gibbs trick for the GMM is to divide the stochastic parameters into two blocks where each block is sampled conditional on the rest.
 The two sub problems is to first sample from the pixel classification conditional on the parameters.
-Secondly the parameters $\theta$ for the GMM is sampled conditional on the pixel classes (Lecture 10 slide 17\cite{L10}).
+Secondly the parameters $\boldsymbol{\theta}$ for the GMM is sampled conditional on the pixel classes (Lecture 10 slide 17\cite{L10}).
 
 \subsection{Discrete Markov Random Field (DMRF)}
-
-A Markov Random field is defined by \textbf{x} where \textbf{x} fulfills the Markov condition as in equation \ref{eq:markov} where $\mathcal{N}_i$ are neighbours to a point $\textbf{s}_i$.
-
+A Discrete Markov Random field is defined by \textbf{x} where \textbf{x} fulfils the Markov condition as in equation \ref{eq:markov} where $\mathcal{N}_i$ are neighbours to a point $\textbf{s}_i$.
 \begin{equation}
 	p(x_i|\{x_j : j\neq i\}) = p(x_i|\{x_j : j\in \mathcal{N}_i\})
 	\label{eq:markov}
 \end{equation}
-
+For gridded data neighbours can for example be the four closest or the eight closest neighbours to a pixel.
 The field is therefore dependent of other pixels. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from Gibbs distributions for which the Markov condition is based on. The conditional distribution becomes
-
 \begin{equation}
 p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = x_i))}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = k))}
 \end{equation}
-
 where $\alpha$ and $\beta$ are constant that describes how common a class \textit{k} is and how similar neighbours are. After rewriting the indicator field $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is
-
 \begin{equation}
 p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta f_{ix_i} }{\sum^K_{k=1}\text{exp}(\alpha_k + \beta f_{ik})}.
 \end{equation}
-
 The approximate log likelihood of $\alpha$ and $\beta$ is
-
 \begin{equation}
-	\text{log} PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \text{log}(\sum_k \text{exp}(\alpha_k + \beta f_{ik})).
+	\log PL_z(\boldsymbol{\alpha},\beta) = \sum_k \alpha_k \sum_i z_{ik} + \beta \sum_k \sum_i z_{ik}f_{ik} - \log(\sum_k \text{exp}(\alpha_k + \beta f_{ik})).
 \end{equation}
 
-
+To optimize all parameters a Gibbs sampling approach is used.
+The blocks are:
+\begin{itemize}
+  \item The indicator field $z$. It is updated using a DMRF sampling method.
+  \item The data GMM parameters are updated using the same approach as in the GMM Gibbs sampler.
+  \item The $\alpha$ and $\beta$ are updated using a random walk Metropolis Hastings sampling.
+    The samples are drawn from a distribution with a certain variance $\sigma_{MH}^2$.
+    Then it is chosen if the sample is accepted through a likelihood calculation.
+    This variance should be just right to get a general acceptance rate around $0.3$.
+    It should also be the case of good mixing, explained in Lecture 12, slide 21\cite{L12}.
+\end{itemize}
+The sampler will only after a burn in period sample all parameters from the correct distribution, this means that all samples in the burn in are extinguished and the remaining ones are used to estimate the parameters expected values.
 
 \section{Method}
 In this assignment the three different models for classification mentioned above has been used on the fMRI data.
@@ -224,21 +228,31 @@ All methods have been tried to classify these though the main focus lies on the 
 The parameters which have been optimized are: number of classes for all methods, the neighbourhood structure and the structure of the $\beta$ parameter(s).
 
 \section{Results and discussion}
-
-As seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the one in \ref{fig:alpha} and... it seemed as though the $\alpha$:s were more stationary for the runs with few classes. They did not really converge to a value except the $\alpha$ that was put to zero, but they did converge around a value. Where many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made. 
+As seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the one in \ref{fig:test} and ... it seemed as though the $\alpha$:s were more stationary for the runs with few classes. They did not really converge to a value except the $\alpha$ that was put to zero, but they did converge around a value. Where many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made.
 It can be explained by having a lot of classes for data that mainly shows active and non-active areas makes it hard to classify more than two types of data. If there is no other obvious classes the classifier will try to classify similar data and this will make $\alpha$ vary a lot since the classification is easily overwritten in the iterations.
 
-The $\beta$:s converged quickly in general, especially if many covariate images were used. Where many classes were used it converged slowly, in particular for few covariate images. It makes sense since with a similar explanation as for the $alpha$:s, the classes are overwritten a lot of times, making the $\beta$:s vary. With many covariates, more data is given which could explain why it converges quickly, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided. 
+The $\beta$:s converged quickly in general, especially if many covariate images were used. Where many classes were used it converged slowly, in particular for few covariate images. It makes sense since with a similar explanation as for the $alpha$:s, the classes are overwritten a lot of times, making the $\beta$:s vary. With many covariates, more data is given which could explain why it converges quickly, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided.
 
 The pseudo log likelihood is slightly bigger for few classes used, independent of how many covariates. This in addition to the discussion above suggests that it might be a good idea to use few classes for the evaluation.
 
-
+In the DMRF Gibbs sampling for optimizing the parameters there is as mentioned a Metropolis Hastings sampling stage with a variance parameter  $\sigma_{MH}^2$.
+The optimum of this parameter, concerning acceptance rate (around $0.3$) and good mixing, is dependent on all of the parameters above.
+This means that is should be optimized for each and every one of them.
+Trying $n$ multiple ones of each results in combinations that gets larger with $n^4$ and to optimize these is an unreasonable task for large $n$.
+In the end we choose 3 different number of classes, 4 number of principal components, 2 neighbourhood structures and 2 versions of the beta parameter, this gives 48 different $\sigma_{MH}^2$ to be optimized.
+Using the same $\sigma_{MH}^2$ for both $\beta$ structures seems gives okay results resulting in 24 different parameters to be manually optimized.
+We say that a good $\sigma_{MH}^2$ is one that results in acceptance rate of $0.3 \pm 0.1$.
+The $\sigma_{MH}^2$:s and the corresponding acceptance rate is found in Tables \dots and \dots there seems to be some connection with lower $\sigma_{MH}^2$ and more principal components.
 
 \newpage
 
 \begin{thebibliography}{37}
+  \bibitem{L09}\textbf{Lecture L09} \\
+\url{http://www.maths.lth.se/matstat/kurser/fmsn20masm25//material_ht18/L09-1x3.pdf}
   \bibitem{L10}\textbf{Lecture L10} \\
 \url{http://www.maths.lth.se/matstat/kurser/fmsn20masm25//material_ht18/L10-1x3.pdf}
+  \bibitem{L12}\textbf{Lecture L12} \\
+\url{http://www.maths.lth.se/matstat/kurser/fmsn20masm25//material_ht18/L12-1x3.pdf}
 \end{thebibliography}
 \pagebreak{}
 
@@ -247,7 +261,7 @@ The pseudo log likelihood is slightly bigger for few classes used, independent o
   \centering
   %\includegraphics[width=\linewidth]{../output/kmeans_1_2_1}
   \caption{testing}
-  \label{fig:kmeans:1:2:1}
+  \label{fig:test}
 \end{figure}
 
 
@@ -259,7 +273,3 @@ The pseudo log likelihood is slightly bigger for few classes used, independent o
 \thispagestyle{empty}
 
 \end{document}
-
-questions:
-What is latent field for DMRF?
-What is the pseudo in pseudo likelihood?
