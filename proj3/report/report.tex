@@ -123,18 +123,18 @@
 \pagebreak{}
 
 \section{Introduction}
-In the research field of image analysis the problem of pixel classification is a common.
+In the research field of image analysis the problem of pixel classification is common.
 For example it can be a foreground-background classification where it is interesting to classify which pixels are in the foreground and background respectively.
-The simple approaches are ones not concerning spatial dependence of pixel classes, i.e. a method which is not concerned if pixels spatially close in an image are classified as different classes.
+The simple approaches are the ones not concerning spatial dependence of pixel classes, i.e. a method which is not concerned if pixels spatially close in an image are classified as different classes.
 In a real image it is reasonable and maybe even probable that this dependence exists.
 Therefore it might be interesting to use a spatial dependent model for the classification.
 
-In this assignment a sequence of fMRI images of an brain has been used.
-The sequence contains images taken with 2 seconds intervals for 320 seconds total (160 frames).
+In this assignment a sequence of fMRI images of a brain has been used.
+The sequence contains images taken with 2 seconds intervals for 320 seconds in total (160 frames).
 In the experiment the patient was either trying to judge if a pair of words rhymed for 20 seconds or rested for 20 seconds.
 An example image of the brain when active and inactive respectively is found in Figure \ref{fig:intro:vis}.
 The goal of the measurement is to classify which parts of the brain are active during the rhyme assessment.
-There are two different versions of the data, one is the raw data explained above, the second one is a kind of regression of the data for each pixel to coefficients $\beta$ corresponding to different temporal functions.
+There are two different versions of the data, one is the raw data explained above, the second one is a kind of regression of the data for each pixel to coefficients corresponding to different temporal functions.
 The data set is then simplified from 160 temporal layers to 11 coefficient layers.
 The first two temporal functions are constant and linear.
 The coefficients for these functions will extract information of constant brain intensity and linear head movement during the 360 seconds.
@@ -157,11 +157,11 @@ However, all models will be applied with different parameters for a discussion o
 \end{figure}
 
 \section{Theory}
-The goal of the models introduced is to estimate both the optimal parameters for each model.
+The goal of the models introduced is to estimate the optimal parameters for each model.
 The second part is to use these parameters to classify the pixels in the image.
 This classification is referred to as the discrete latent field $\boldsymbol{x}$.
 $\boldsymbol{x}$ is a grid with equal size as the image and each pixel variable in the field can have discrete values within the number of possible classes for the problem.
-The latent is field strongly connected to the indicator field $\boldsymbol{z}$ where
+The latent field is strongly connected to the indicator field $\boldsymbol{z}$ where
 \begin{equation}
   z_{ik} = \mathds{I}(x_i = k).
 \end{equation}
@@ -202,11 +202,11 @@ A Discrete Markov Random field is defined by \textbf{x} where \textbf{x} fulfils
 	\label{eq:markov}
 \end{equation}
 For gridded data neighbours can for example be the four closest or the eight closest neighbours to a pixel.
-The field is therefore includes a spatial dependence. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from the Gibbs distribution which includes the Markov condition. The conditional distribution is
+The field therefore includes a spatial dependence. For a Discrete Markov Random Field, \textbf{x} can only take values $x_i \in 1,2,...,K$ where \textit{K} is the number of classes. In the lecture slides the conditional distribution of $x_i$ is derived from the Gibbs distribution which includes the Markov condition. The conditional distribution is
 \begin{equation}
   p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta_{(x_i)}\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = x_i))}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta_{(k)}\sum_{j\in \mathcal{N}_i}\mathds{I}(x_j = k))}
 \end{equation}
-where $\alpha$ and is connected to how common a class \textit{k} is and $\beta_{(k)}$ is how similar neighbours in the same class $k$ are. The parenthesis around $x_i$ or $k$ in $\beta$ is explained by that the model can either have one $\beta$ for all classes or one for either one. After rewriting the indicator field as $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is
+where $\alpha$ is connected to how common a class \textit{k} is and $\beta_{(k)}$ is how similar neighbours in the same class $k$ are. The parenthesis around $x_i$ or $k$ in $\beta$ is explained by that the model can either have one $\beta$ for all classes or one for either one. After rewriting the indicator field as $z_{ik} = \mathds{I}(x_i = k)$ where $f_{ik} = \sum_{j\in \mathcal{N}_i} z_{jk}$ the expression is
 \begin{equation}
   p(x_i|x_j,j\in \mathcal{N}_i) = \dfrac{\text{exp}(\alpha_{x_i}+\beta_{(x_i)} f_{ix_i})}{\sum^K_{k=1}\text{exp}(\alpha_k + \beta_{(k)} f_{ik})}.
 \end{equation}
@@ -230,11 +230,11 @@ The blocks are:
   \item The data GMM parameters are updated using the same approach as in the GMM Gibbs sampler.
   \item The $\alpha$:s and $\beta$:s are updated using a random walk Metropolis Hastings sampling.
     The samples are drawn from a distribution with a certain variance $\sigma_{MH}^2$.
-    This sample is is either accepted or disregarded through a likelihood calculation.
+    This sample is either accepted or disregarded through a likelihood calculation.
     The variance $\sigma_{MH}^2$ should be just right to get a ``good'' acceptance rate around $0.3$.
     It should also be the case of good mixing, visualized in Lecture 12, slide 21\cite{L12}.
 \end{itemize}
-The sampler will only after a period of burn in samples, sample the parameters from the correct distribution, this means that all samples in the burn in are extinguished and the samples afterwards are used to estimate the parameters expected values.
+The sampler will only after a period of burn in samples, sample the parameters from the correct distribution, this means that all samples in the burn in are extinguished and the samples afterwards are used to estimate the parameters' expected values.
 
 
 \section{Method}
@@ -262,12 +262,12 @@ As mentioned in the Method section, the last nine covariate images were used for
     \label{fig:mean}
 \end{figure}
 
-For the computationally fast method, K-means, the classification was made all combinations of 2-7 classes and 1-5 principal components. The results were not very good but gave an indicator of where the active parts were in the brain. Too many classes made the image so noisy that is was nearly impossible to distinguish the interesting parts. An example of the best results is found in Figure \ref{fig:kmeans}.
+For the computationally fast method, K-means, the classification was made for all combinations of 2-7 classes and 1-5 principal components. The results were not very good but gave an indicator of where the active parts were in the brain. Too many classes made the image so noisy that is was nearly impossible to distinguish the interesting parts. An example of the best results is found in Figure \ref{fig:kmeans}.
 
 \begin{figure}[H]
 	\centering
     \includegraphics[width = 0.7\linewidth]{../output/kmeans_1_3}
-    \caption{The results from one of the classifications made with the K-means method. This example was created with three classes and only the first principal component. The image is very noisy but kind of indicates where the active parts is. Note that this is one of the best images, in the authors opinion.}
+    \caption{The results from one of the classifications made with the K-means method. This example was created with three classes and only the first principal component. The image is very noisy but kind of indicates where the active parts are. Note that this is one of the best images, in the authors opinion.}
     \label{fig:kmeans}
 \end{figure}
 
@@ -280,29 +280,29 @@ The Gaussian Mixture Model was used with the same classes and principal componen
   \label{fig:gmm}
 \end{figure}
 
-In the DMRF Gibbs sampling for optimizing the parameters 1000 iterations with a burn in of 300 was used and as mentioned is there a Metropolis Hastings sampling stage with a variance parameter  $\sigma_{MH}^2$.
+In the DMRF Gibbs sampling for optimizing the parameters, 1000 iterations with a burn in of 300 was used and as mentioned there is a Metropolis Hastings sampling stage with a variance parameter  $\sigma_{MH}^2$.
 The optimum of this parameter, concerning acceptance rate (around $0.3$) and good mixing, is dependent on all of the parameters named in the Method section.
 This means that is should be optimized for each and every one of them.
-Trying $n$ multiple ones of each results in combinations that gets larger with $n^4$ and to optimize these is an unreasonable task, even for $n=4$ with the time for this project.
+Trying $n$ multiple ones of each results in combinations that gets larger with $n^4$ and to optimize these is an unreasonable task, even for $n=4$, with the time for this project.
 In the end we chose 3 different number of classes, 4 number of principal components, 2 neighbourhood structures and 2 versions of the beta parameter (either one for all classes or one for each class), this gives 48 different $\sigma_{MH}^2$ to be optimized.
-The upper limitation for number of classes was based on visual assessments, seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the ones in Figure \ref{fig:alphabeta} it seemed as though the $\alpha$:s were got to a more stationary distribution for the runs with fewer number of classes.
+The upper limitation for number of classes was based on visual assessments, seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the ones in Figure \ref{fig:alphabeta} it seemed as though the $\alpha$:s got to a more stationary distribution for the runs with fewer number of classes.
 We decided to use four principal components from observing the eigenvalues gained from the principal component analysis, see figure \ref{fig:pca}. The first eigenvalues are the most significant and as a second reason we chose four to limit the combinations. The last mentioned is also why only two neighbourhood structures and versions of beta parameters were used.
 
 Looking at plots similar to the ones in Figure \ref{fig:alphabeta} the $\alpha$ and $\beta$ parameters are discussed.
 When many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made.
-It can be explained by having too many classes compared to what exists in the data, maybe the two classes active and non-active areas makes it harder to classify more than two types of data.
+It can be explained by having too many classes compared to how many exists in the data makes it harder to classify more than that. In our case there might be two classes, active and non-active areas, then it is problematic to classify more than two types of data.
 If there are no other obvious classes the classifier will try to classify similar data and this will make $\alpha$ vary a lot since the classification is easily transferred in the iterations. There is no obvious differences for how the $\alpha$:s behave for different neighbourhood structures, but if a single $\beta$ or different $\beta$:s for each class had been used, it seemed to affect the $\alpha$:s.
 For different $\beta$:s for each class the $\alpha$:s converged slower, or not at all during the iterations used.
-If we used more iterations we might have got better results for the convergence.
+If we would have used more iterations we might have got better results for the convergence.
 Different $\beta$:s gives more dependent parameters to take in to account which could be the reason for the slow convergence.
 The $\beta$:s converged quickly in general, especially for more principal components.
 Though with more classes it converged slower, in particular for few principal components.
-It makes sense since with a similar explanation as for the $\alpha$:s, the classes are transferred which might slow convergence.
-The result that $\beta$ converges faster with more principal components, could be explain with that more data is used, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided.
-When comparing different neighbourhoods and different numbers of $\beta$:s the results were more or less the same as $\alpha$, there are no clear differences for the neighbourhood structures, but they converge faster if only one $\beta$ for all classes is used.
+It makes sense since with a similar explanation as for the $\alpha$:s, the classes are transferred which might slow the convergence.
+The result that $\beta$ converges faster with more principal components, could be explained with that more data is used, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided.
+When comparing different neighbourhoods and different $\beta$:s for each class the results were more or less the same as for the $\alpha$:s, there are no clear differences for the neighbourhood structures, but they converge faster if only one $\beta$ for all classes is used.
 But is it reasonable that it is better to only have a single $\beta$ for all classes?
 It could be argued that the background of the image should have a larger dependence compared to the active brain parts since parts of the background are outside of the head where everything is background.
-The reason for our results could be connected to how we have optimized the acceptance rate for the sampling in discussed later or maybe because of to few iterations and burn in for the sampling to converge to the stationary distributions.
+The reason for our results could be connected to how we have optimized the acceptance rate for the sampling which is discussed later or maybe because of too few iterations and burn in for the sampling to converge to the stationary distributions.
 
 Looking at the result in Figure \ref{fig:plog} the pseudo log likelihood is slightly larger for few classes used, independent of how many used principal components. This, in addition to the discussion above, suggests that it might be a good idea to use few classes for the evaluation. Visual results of the classification also showed that, from our point of view, the active parts had been best classified for few classes. An example of the results using two classes is found in Figure \ref{fig:mrf}.
 
@@ -310,10 +310,10 @@ Using the same $\sigma_{MH}^2$ for both $\beta$ structures seemed to give okay r
 We say that a good $\sigma_{MH}^2$ is one that results in acceptance rate of $0.3 \pm 0.05$ since the result of good mixing is more subjective from what we know.
 The $\sigma_{MH}^2$:s and the corresponding acceptance rate is found in Tables \ref{tab:sigma:n1}, \ref{tab:sigma:n2}, \ref{tab:acceptance:n1} and \ref{tab:acceptance:n2}.
 From the information of the $\sigma_{MH}^2$:s there seems to be some connection with lower $\sigma_{MH}^2$ and more principal components or larger neighbourhood.
-This suggests that larger neighbourhoods and more principal components are connected to a smaller steps in the Metropolis Hastings random walk of the $\alpha$ and $\beta$ parameters.
-However we cannot explain how this is connected to the posterior distributions of $\alpha$ and $\beta$ with our current knowledge level.
+This suggests that larger neighbourhoods and more principal components are connected to smaller steps in the Metropolis Hastings random walk of the $\alpha$ and $\beta$ parameters.
+However we can not explain how this is connected to the posterior distributions of $\alpha$ and $\beta$ with our current knowledge level.
 
-As a conclusion we find that the best versions of each of the methods very similarly and more or less correctly classifies the parts of the brain which indicated in Figure \ref{fig:mean} differently compared to the background (our subjective opinion).
+As a conclusion we find that the best versions of each of the methods very similarly, and more or less correctly, classifies the parts of the brain which are indicated in Figure \ref{fig:mean} differently compared to the background (our subjective opinion).
 The difference is how the DMRF is less noisy in its classification which is why we also believe that this is the best one.
 Interesting to note from this classification is that the back parts of the brain corresponds to the visual cortex.
 For a patient which visually tries to read possible rhymes it is reasonable that it should be active.
