@@ -48,7 +48,14 @@
 \section*{}
 \begin{frame}
   \frametitle{fMRI data}
-  \tableofcontents[hidesubsections]
+  %\tableofcontents[hidesubsections]
+  
+  \begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{../output/visualize1}
+    \caption*{}
+    \label{fig:vis}  
+\end{figure}
 \end{frame}
 
 
@@ -71,36 +78,122 @@
 
 
 
-\section{}
+\section{Problem Description}
 
 \begin{frame}
-  \frametitle{}
+  \frametitle{Models}
   \framesubtitle{}
   
   
   \begin{block}{}
   \begin{itemize}
-    \item 
-    \item 
+    \item K-means
+    \item Gaussian Mixture Model
+    \item Discrete Markov Random Field
   \end{itemize}
   \end{block}
 
 \end{frame}
 
-
-
-\section{}
 \begin{frame}
-  \frametitle{}
+  \frametitle{Using data directly VS Regression coefficients}
   \framesubtitle{}
-
+  
+% Images of components...  
 %\begin{figure}
 %\centering
 %\includegraphics[width=\textwidth]{}
 %    \caption*{}
 %    \label{fig:}  
 %\end{figure}
+
 \end{frame}
+
+\begin{frame}
+  \frametitle{"Mean activity"}
+  \framesubtitle{}
+  
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{../output/meanactivity}
+    \caption*{}
+    \label{fig:mean}  
+\end{figure}
+
+\end{frame}
+
+\section{K-means}
+\begin{frame}
+  \frametitle{}
+  \framesubtitle{}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{../output/kmeans_1_3}
+    \caption*{}
+    \label{fig:kmeams}  
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{}
+  \framesubtitle{}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth]{../output/kmeans_12345_7}
+\includegraphics[width=0.49\textwidth]{../output/kmeans_12_4}
+    \caption*{}
+    \label{fig:kmeams2}  
+\end{figure}
+\end{frame}
+
+\section{Gaussian Mixture Model}
+\begin{frame}
+  \frametitle{}
+  \framesubtitle{}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{../output/gmm_1_6}
+    \caption*{}
+    \label{fig:gmm}  
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{}
+  \framesubtitle{}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth]{../output/gmm_12_7}
+\includegraphics[width=0.49\textwidth]{../output/gmm_123_4}
+    \caption*{}
+    \label{fig:gmm2}  
+\end{figure}
+\end{frame}
+
+\section{Discrete Markov Random Field}
+\begin{frame}
+  \frametitle{}
+  \framesubtitle{}
+
+  \begin{block}{}
+  \begin{itemize}
+    \item Number of classes
+    \item Number of covariate images
+    \item Different $\beta$:s for different classes
+    \item Different neighbourhood structures
+  \end{itemize}
+  \end{block}
+
+
+
+\end{frame}
+
+
 
 
 

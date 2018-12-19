@@ -28,6 +28,13 @@ if exist(meanfile, 'file') == 0
 end
 
 
+file ='proj3/output/x.png';
+if exist(file, 'file') == 0
+  plot(X)
+  print(file, '-dpng');
+  close
+end
+
 % MHsigma2 = [4.7e-2, 4.5e-2, 2.8e-2, 3.5e-2, 3.3e-2     ;
 %             5.7e-3, 5.0e-3, 3.9e-3, 4.3e-3, 5.3e-3    ;
 %             4.5e-3, 4.8e-3, 3.9e-3, 3.9e-3, 3.1e-3   ;
