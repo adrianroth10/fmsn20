@@ -18,7 +18,7 @@ neighbours_set = {neighbours1, neighbours2};
 for i_neighbours = 1:length(neighbours_set)
     neighbours = neighbours_set{i_neighbours};
     proj3_mrf_neighbours(y_all, y_all_stacked, sz, neighbours, i_component, str_components, nc, i_neighbours, true, MHsigma2);
-    proj3_mrf_neighbours(y_all, y_all_stacked, sz, neighbours, i_component, str_components, nc, i_neighbours, false, MHsigma2);
+    % proj3_mrf_neighbours(y_all, y_all_stacked, sz, neighbours, i_component, str_components, nc, i_neighbours, false, MHsigma2);
 end
 
 end

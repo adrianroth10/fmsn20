@@ -299,9 +299,44 @@ The $\sigma_{MH}^2$:s and the corresponding acceptance rate is found in Tables \
   \begin{tabular}{c c c}
     \input{../output/mhsigman1.tex}
   \end{tabular}
-  \caption{}
+  \caption{The table includes the optimized $\sigma_{MH}^2$, corresponding to an acceptance rate of $0.3 \pm 0.1$, for each combination of principal components used ${[1], [1,2], [1,2,3], [1,2,3,4]}$ as rows and number of classes $[2, 3, 4]$ as columns. This is optimized for the 4 neighbourhood and a single $\beta$ parameter. It is hard to see a connection between the covariates of number of classes and the used principal components though it seems that $\sigma_{MH}^2$ gets lower when using more principal components.}
   \label{tab:sigma:n1}
 \end{table}
+
+\begin{table}
+  \centering
+  \begin{tabular}{c c c}
+    \input{../output/mhsigman2.tex}
+  \end{tabular}
+  \caption{The same content as Table \ref{tab:sigma:n1} with the difference of using 8 neighbourhood instead of 4.}
+  \label{tab:sigma:n2}
+\end{table}
+
+
+\begin{table}
+  \centering
+  \begin{tabular}{c c c}
+    \input{../output/acceptance_rate_1_2_1_1.tex} & \input{../output/acceptance_rate_1_3_1_1.tex} & \input{../output/acceptance_rate_1_4_1_1.tex} \\
+    \input{../output/acceptance_rate_12_2_1_1.tex} & \input{../output/acceptance_rate_12_3_1_1.tex} & \input{../output/acceptance_rate_12_4_1_1.tex} \\
+    \input{../output/acceptance_rate_123_2_1_1.tex} & \input{../output/acceptance_rate_123_3_1_1.tex} & \input{../output/acceptance_rate_123_4_1_1.tex} \\
+    % \input{../output/acceptance_rate_1234_2_2_1.tex} & \input{../output/acceptance_rate_1234_3_2_1.tex} & \input{../output/acceptance_rate_1234_4_2_1.tex} \\
+  \end{tabular}
+  \caption{The acceptance rates for the corresponding $\sigma_{MH}^2$ as in Table \ref{tab:sigma:n1}. They are optimised to lie within $0.2 - 0.4$.}
+  \label{tab:acceptance:n1}
+\end{table}
+
+\begin{table}
+  \centering
+  \begin{tabular}{c c c}
+    \input{../output/acceptance_rate_1_2_2_1.tex} & \input{../output/acceptance_rate_1_3_2_1.tex} & \input{../output/acceptance_rate_1_4_2_1.tex} \\
+    \input{../output/acceptance_rate_12_2_2_1.tex} & \input{../output/acceptance_rate_12_3_2_1.tex} & \input{../output/acceptance_rate_12_4_2_1.tex} \\
+    \input{../output/acceptance_rate_123_2_2_1.tex} & \input{../output/acceptance_rate_123_3_2_1.tex} & \input{../output/acceptance_rate_123_4_2_1.tex} \\
+    % \input{../output/acceptance_rate_1234_2_2_1.tex} & \input{../output/acceptance_rate_1234_3_2_1.tex} & \input{../output/acceptance_rate_1234_4_2_1.tex} \\
+  \end{tabular}
+  \caption{The acceptance rates for the corresponding $\sigma_{MH}^2$ as in Table \ref{tab:sigma:n2}. They are optimised to lie within $0.2 - 0.4$.}
+  \label{tab:acceptance:n2}
+\end{table}
+
 
 In general the methods find the parts of the brain which is indicated in Figure \ref{fig:mean}.
 Interesting is to note that the back parts of the brain corresponds to the visual cortex.
