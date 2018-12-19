@@ -240,7 +240,7 @@ The sampler will only after a period of burn in samples, sample the parameters f
 \section{Method}
 In this assignment the three different models for classification mentioned above has been used on the fMRI data.
 The work has been focused on analysing the classification of the active parts of the brain which is hard to find just from the images in Figure \ref{fig:intro:vis}.
-To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression $\beta$ is used.
+To exclude the uninteresting parts of the data only information from the last nine coefficients from the data regression $\beta$ (not the same $\beta$ as used in the DMRF) is used.
 The assumption is made that all or at least a sufficient amount of the interesting data concerning the experimental active parts of the brain are stored in these coefficients.
 All methods have been tried to classify the data though the main focus lies on the DMRF method since it is the only one including spatial dependence, an important component for brain activity intensity modelling.
 The parameters which have been optimized are:
@@ -253,98 +253,116 @@ The parameters which have been optimized are:
 
 \section{Results and discussion}
 
-As mentioned in the Method section, the last nine covariate images were used for the classification as these can describe the brain activity. In Figure \ref{fig:mean} the mean of the relevant images is plotted, with indicated areas where the brain seems to have some kind of activity. This gives us a pointer on where to look for activity.
+As mentioned in the Method section, the last nine covariate images were used for the classification as these should include the interesting information of the brain activity when finding rhymes. In Figure \ref{fig:mean} the mean of the relevant images is plotted, with indicated areas where the brain seems to have some kind of activity. This gives us a pointer on where to look for activity.
 
 \begin{figure}[H]
 	\centering
     \includegraphics[width = 0.7\linewidth]{../output/meanactivity}
-    \caption{The mean image of the covariates that are relevant for detecting active parts of the brain with marked areas where the authors guess that the activity is located.}
+    \caption{The mean image of the covariates which are relevant for detecting active parts of the brain. These are the last nine layers of the regression coefficients. Marked areas are where the authors guess that the activity is located.}
     \label{fig:mean}
 \end{figure}
 
-For the quick method K-means the classification was made for 2-7 classes and for 1-5 covariate images. The results were not very good but gave an indicator of where the active parts were in the brain. Too many classes made the image so noisy that is was nearly impossible to distinguish the interesting parts. An example of the best results is found in Figure \ref{fig:kmeans}.
+For the computationally fast method, K-means, the classification was made all combinations of 2-7 classes and 1-5 principal components. The results were not very good but gave an indicator of where the active parts were in the brain. Too many classes made the image so noisy that is was nearly impossible to distinguish the interesting parts. An example of the best results is found in Figure \ref{fig:kmeans}.
 
 \begin{figure}[H]
 	\centering
     \includegraphics[width = 0.7\linewidth]{../output/kmeans_1_3}
-    \caption{The results from one of the classifications made with the K-means method. This example was created with three classes and one covariate image. The image is very noisy but kind of indicates where the active parts is. Note that this is one of the best images, in the authors opinion.}
+    \caption{The results from one of the classifications made with the K-means method. This example was created with three classes and only the first principal component. The image is very noisy but kind of indicates where the active parts is. Note that this is one of the best images, in the authors opinion.}
     \label{fig:kmeans}
 \end{figure}
 
-The Gaussian Mixture Model was used with the same classes and covariates as K-means. The results were slightly less noisy but for most of the combinations, you need to know where to look to actually see the active parts. One of the best images can be seen in Figure \ref{fig:gmm}.
-
+The Gaussian Mixture Model was used with the same classes and principal components as K-means. The results were slightly less noisy but for most of the combinations, you need to know where to look to actually see the active parts. One of the best images can be seen in Figure \ref{fig:gmm}.
 
 \begin{figure}[H]
-	\centering
-    \includegraphics[width = 0.7\linewidth]{../output/gmm_1_6}
-    \caption{The results from one of the classifications made with the Gaussian Mixture Model. This example was created with six classes and one covariate image. The image is rather noisy but kind of indicates where the active parts is. Note that this is one of the best images, in the authors opinion.}
-    \label{fig:gmm}
+  \centering
+  \includegraphics[width = 0.7\linewidth]{../output/gmm_1_3}
+  \caption{The results from one of the classifications made with the Gaussian Mixture Model. This example was created with three classes and the first principal component. The image is rather noisy but kind of indicates where the active parts is. Again, this is the best classification in the authors opinion.}
+  \label{fig:gmm}
 \end{figure}
 
-
-In the DMRF Gibbs sampling for optimizing the parameters there is as mentioned a Metropolis Hastings sampling stage with a variance parameter  $\sigma_{MH}^2$.
+In the DMRF Gibbs sampling for optimizing the parameters 1000 iterations with a burn in of 300 was used and as mentioned is there a Metropolis Hastings sampling stage with a variance parameter  $\sigma_{MH}^2$.
 The optimum of this parameter, concerning acceptance rate (around $0.3$) and good mixing, is dependent on all of the parameters named in the Method section.
 This means that is should be optimized for each and every one of them.
-Trying $n$ multiple ones of each results in combinations that gets larger with $n^4$ and to optimize these is an unreasonable task for large $n$.
-In the end we chose 3 different number of classes, 4 number of principal components, 2 neighbourhood structures and 2 versions of the beta parameter, this gives 48 different $\sigma_{MH}^2$ to be optimized. The limitation of classes was based on visual assessments, seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the ones in Figure \ref{fig:alphabeta} it seemed as though the $\alpha$:s were more stationary for the runs with few classes. They did not really converge to a value but they did converge around a value. Where many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made.
-It can be explained by having a lot of classes for data that mainly shows active and non-active areas makes it hard to classify more than two types of data. If there are no other obvious classes the classifier will try to classify similar data and this will make $\alpha$ vary a lot since the classification is easily overwritten in the iterations. There is no obvious differences for how the $\alpha$:s behave for different neighbourhood structures, but if a single $\beta$ or different $\beta$:s for each class had been used, it seemed to affect the $\alpha$:s. For different $\beta$:s the $alpha$:s converged slower, or not at all during the iterations used. If more iterations would have been tried we might have got a better results. Different $\beta$:s gives more dependent parameters to take in to account which could be the reason for the slow convergence. 
-The $\beta$:s converged quickly in general, especially if many covariate images were used. Where many classes were used it converged slowly, in particular for few covariate images. It makes sense since with a similar explanation as for the $\alpha$:s, the classes are overwritten a lot of times, making the $\beta$:s vary. With many covariates, more data is given which could explain why it converges quickly, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided. When comparing neighbourhoods and different numbers of $\beta$:s the results were more of less the same as for $\alpha$, there are no particular differences for the neighbourhood structures, but they converge faster if only one $\beta$ is used. 
-The pseudo log likelihood is slightly bigger for few classes used, independent of how many covariates. This in addition to the discussion above suggests that it might be a good idea to use few classes for the evaluation. Visual results of the classification also showed that, from our point of view, the active parts had been best classified for few classes. An example of the results using two classes is found in Figure \ref{fig:mrf}.
-
+Trying $n$ multiple ones of each results in combinations that gets larger with $n^4$ and to optimize these is an unreasonable task, even for $n=4$ with the time for this project.
+In the end we chose 3 different number of classes, 4 number of principal components, 2 neighbourhood structures and 2 versions of the beta parameter (either one for all classes or one for each class), this gives 48 different $\sigma_{MH}^2$ to be optimized.
+The upper limitation for number of classes was based on visual assessments, seen in the plots of $\alpha$:s and $\beta$:s from each iteration, similar to the ones in Figure \ref{fig:alphabeta} it seemed as though the $\alpha$:s were got to a more stationary distribution for the runs with fewer number of classes.
 We decided to use four principal components from observing the eigenvalues gained from the principal component analysis, see figure \ref{fig:pca}. The first eigenvalues are the most significant and as a second reason we chose four to limit the combinations. The last mentioned is also why only two neighbourhood structures and versions of beta parameters were used.
-Using the same $\sigma_{MH}^2$ for both $\beta$ structures seemed to give okay results, while it was problematic for the different neighbourhood structures. 12 $\sigma_{MH}^2$ were tuned for each neighbourhood structure, resulting in 24 different parameters to be manually optimized.
-We say that a good $\sigma_{MH}^2$ is one that results in acceptance rate of $0.3 \pm 0.1$.
-The $\sigma_{MH}^2$:s and the corresponding acceptance rate is found in Tables \dots and \dots there seems to be some connection with lower $\sigma_{MH}^2$ and more principal components.
 
-\begin{table}
+Looking at plots similar to the ones in Figure \ref{fig:alphabeta} the $\alpha$ and $\beta$ parameters are discussed.
+When many classes were used, the $\alpha$:s almost had an oscillating appearance. Some plots did not follow this assessment, but it was a vague assertion that was made.
+It can be explained by having too many classes compared to what exists in the data, maybe the two classes active and non-active areas makes it harder to classify more than two types of data.
+If there are no other obvious classes the classifier will try to classify similar data and this will make $\alpha$ vary a lot since the classification is easily transferred in the iterations. There is no obvious differences for how the $\alpha$:s behave for different neighbourhood structures, but if a single $\beta$ or different $\beta$:s for each class had been used, it seemed to affect the $\alpha$:s.
+For different $\beta$:s for each class the $\alpha$:s converged slower, or not at all during the iterations used.
+If we used more iterations we might have got better results for the convergence.
+Different $\beta$:s gives more dependent parameters to take in to account which could be the reason for the slow convergence.
+The $\beta$:s converged quickly in general, especially for more principal components.
+Though with more classes it converged slower, in particular for few principal components.
+It makes sense since with a similar explanation as for the $\alpha$:s, the classes are transferred which might slow convergence.
+The result that $\beta$ converges faster with more principal components, could be explain with that more data is used, but it is peculiar that this behaviour does not seem to show in the $\alpha$ plots where it also should converge faster if more data is provided.
+When comparing different neighbourhoods and different numbers of $\beta$:s the results were more or less the same as $\alpha$, there are no clear differences for the neighbourhood structures, but they converge faster if only one $\beta$ for all classes is used.
+But is it reasonable that it is better to only have a single $\beta$ for all classes?
+It could be argued that the background of the image should have a larger dependence compared to the active brain parts since parts of the background are outside of the head where everything is background.
+The reason for our results could be connected to how we have optimized the acceptance rate for the sampling in discussed later or maybe because of to few iterations and burn in for the sampling to converge to the stationary distributions.
+
+Looking at the result in Figure \ref{fig:plog} the pseudo log likelihood is slightly larger for few classes used, independent of how many used principal components. This, in addition to the discussion above, suggests that it might be a good idea to use few classes for the evaluation. Visual results of the classification also showed that, from our point of view, the active parts had been best classified for few classes. An example of the results using two classes is found in Figure \ref{fig:mrf}.
+
+Using the same $\sigma_{MH}^2$ for both $\beta$ structures seemed to give okay results. Sometimes the results are quite bad, the reader should be aware of that the results when using one $\beta$ for each class is not optimised and might be worse because of that. Though the acceptance for the other three variables mentioned in the method part was problematic. 12 $\sigma_{MH}^2$ were tuned for each neighbourhood structure, resulting in 24 different parameters to be manually optimized.
+We say that a good $\sigma_{MH}^2$ is one that results in acceptance rate of $0.3 \pm 0.05$ since the result of good mixing is more subjective from what we know.
+The $\sigma_{MH}^2$:s and the corresponding acceptance rate is found in Tables \ref{tab:sigma:n1}, \ref{tab:sigma:n2}, \ref{tab:acceptance:n1} and \ref{tab:acceptance:n2}.
+From the information of the $\sigma_{MH}^2$:s there seems to be some connection with lower $\sigma_{MH}^2$ and more principal components or larger neighbourhood.
+This suggests that larger neighbourhoods and more principal components are connected to a smaller steps in the Metropolis Hastings random walk of the $\alpha$ and $\beta$ parameters.
+However we cannot explain how this is connected to the posterior distributions of $\alpha$ and $\beta$ with our current knowledge level.
+
+As a conclusion we find that the best versions of each of the methods very similarly and more or less correctly classifies the parts of the brain which indicated in Figure \ref{fig:mean} differently compared to the background (our subjective opinion).
+The difference is how the DMRF is less noisy in its classification which is why we also believe that this is the best one.
+Interesting to note from this classification is that the back parts of the brain corresponds to the visual cortex.
+For a patient which visually tries to read possible rhymes it is reasonable that it should be active.
+That leaves brain activity for understanding what is read and if it is rhyming.
+The results suggests that the reading and/or rhyme-centre of the brain is found to be either in the front or front-right part of the brain.
+
+
+\begin{table}[H]
   \centering
   \begin{tabular}{c c c}
     \input{../output/mhsigman1.tex}
   \end{tabular}
-  \caption{The table includes the optimized $\sigma_{MH}^2$, corresponding to an acceptance rate of $0.3 \pm 0.1$, for each combination of principal components used ${[1], [1,2], [1,2,3], [1,2,3,4]}$ as rows and number of classes $[2, 3, 4]$ as columns. This is optimized for the 4 neighbourhood and a single $\beta$ parameter. It is hard to see a connection between the covariates of number of classes and the used principal components though it seems that $\sigma_{MH}^2$ gets lower when using more principal components.}
+  \caption{The table includes the optimized $\sigma_{MH}^2$, corresponding to an acceptance rate of $0.3 \pm 0.05$, for each combination of principal components used ${[1], [1,2], [1,2,3], [1,2,3,4]}$ as rows and number of classes $[2, 3, 4]$ as columns. This is optimized for the 4 neighbourhood and a single $\beta$ parameter. It is hard to see a connection between the covariates of number of classes and the used principal components though it seems that $\sigma_{MH}^2$ gets lower when using more principal components.}
   \label{tab:sigma:n1}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
   \centering
   \begin{tabular}{c c c}
-%    \input{../output/mhsigman2.tex}
+    \input{../output/mhsigman2.tex}
   \end{tabular}
   \caption{The same content as Table \ref{tab:sigma:n1} with the difference of using 8 neighbourhood instead of 4.}
   \label{tab:sigma:n2}
 \end{table}
 
 
-\begin{table}
+\begin{table}[H]
   \centering
   \begin{tabular}{c c c}
     \input{../output/acceptance_rate_1_2_1_1.tex} & \input{../output/acceptance_rate_1_3_1_1.tex} & \input{../output/acceptance_rate_1_4_1_1.tex} \\
     \input{../output/acceptance_rate_12_2_1_1.tex} & \input{../output/acceptance_rate_12_3_1_1.tex} & \input{../output/acceptance_rate_12_4_1_1.tex} \\
     \input{../output/acceptance_rate_123_2_1_1.tex} & \input{../output/acceptance_rate_123_3_1_1.tex} & \input{../output/acceptance_rate_123_4_1_1.tex} \\
-    % \input{../output/acceptance_rate_1234_2_2_1.tex} & \input{../output/acceptance_rate_1234_3_2_1.tex} & \input{../output/acceptance_rate_1234_4_2_1.tex} \\
+    \input{../output/acceptance_rate_1234_2_2_1.tex} & \input{../output/acceptance_rate_1234_3_1_1.tex} & \input{../output/acceptance_rate_1234_4_2_1.tex} \\
   \end{tabular}
-  \caption{The acceptance rates for the corresponding $\sigma_{MH}^2$ as in Table \ref{tab:sigma:n1}. They are optimised to lie within $0.2 - 0.4$.}
+  \caption{The acceptance rates for the corresponding $\sigma_{MH}^2$ as in Table \ref{tab:sigma:n1}. They are optimised to lie within the range $[0.25 - 0.35]$.}
   \label{tab:acceptance:n1}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
   \centering
   \begin{tabular}{c c c}
     \input{../output/acceptance_rate_1_2_2_1.tex} & \input{../output/acceptance_rate_1_3_2_1.tex} & \input{../output/acceptance_rate_1_4_2_1.tex} \\
     \input{../output/acceptance_rate_12_2_2_1.tex} & \input{../output/acceptance_rate_12_3_2_1.tex} & \input{../output/acceptance_rate_12_4_2_1.tex} \\
     \input{../output/acceptance_rate_123_2_2_1.tex} & \input{../output/acceptance_rate_123_3_2_1.tex} & \input{../output/acceptance_rate_123_4_2_1.tex} \\
-    % \input{../output/acceptance_rate_1234_2_2_1.tex} & \input{../output/acceptance_rate_1234_3_2_1.tex} & \input{../output/acceptance_rate_1234_4_2_1.tex} \\
+    \input{../output/acceptance_rate_1234_2_2_1.tex} & \input{../output/acceptance_rate_1234_3_2_1.tex} & \input{../output/acceptance_rate_1234_4_2_1.tex} \\
   \end{tabular}
-  \caption{The acceptance rates for the corresponding $\sigma_{MH}^2$ as in Table \ref{tab:sigma:n2}. They are optimised to lie within $0.2 - 0.4$.}
+  \caption{The acceptance rates for the corresponding $\sigma_{MH}^2$ as in Table \ref{tab:sigma:n2}. They are optimised to lie within the range $[0.25 - 0.35]$.}
   \label{tab:acceptance:n2}
 \end{table}
-
-
-In general the methods find the parts of the brain which is indicated in Figure \ref{fig:mean}.
-Interesting to note is that the back parts of the brain corresponds to the visual cortex.
-For a subject which visually tries to read possible rhymes it is reasonable that it should be active.
-That leaves the understanding of the text which might include rhyming.
-The results suggests that the rhyme-centre of the brain is found to be either in the front or front-right part of the brain.
 
 \begin{figure}[H]
 	\centering
@@ -357,14 +375,22 @@ The results suggests that the rhyme-centre of the brain is found to be either in
   \centering
   \includegraphics[width=0.49\textwidth]{../output/mrf_alpha_12_2_2_1}
   \includegraphics[width=0.49\textwidth]{../output/mrf_beta_12_2_2_1}
-  \caption{An example of the plots of $\alpha$:s and $\beta$:s, corresponding to the run with two covariate images, two classes, the 8-neighbourhood structure and the same $\beta$:s for both classes. The $\alpha$-value seems to converge around a value slightly bigger than 0, and the $\beta$ to a value around 0.55. They converge quite quickly which is good for the model. Burn in was put to 200, and they seem to have converged, more or less, before this.}
+  \caption{An example of the plots of $\alpha$:s and $\beta$:s, corresponding to the run with two principal components, two classes, the 8-neighbourhood structure and the same $\beta$:s for both classes. The $\alpha$-value seems to converge around a value slightly larger than 0, and the $\beta$ to a value around 0.55. They converge quite quickly and with good mixing which is also good results for the model. Burn in was put up to the 300:th iteration, and they seem to have converged, more or less, before this.}
   \label{fig:alphabeta}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
+    \includegraphics[width = 0.7\linewidth]{../output/mrf_plog_12_2_2_1}
+    \caption{The pseudo likelihood function for the DMRF estimation corresponding to the results in Figures \ref{fig:alphabeta} and \ref{fig:mrf}. It converges quite fast to a larger likelihood compared to estimations for different models.}
+    \label{fig:plog}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
     \includegraphics[width = 0.7\linewidth]{../output/mrf_12_2_2_1}
-    \caption{The result of the classification using two covariate images, two classes, the 8-neighbourhood structure and the same $\beta$:s for both classes. As the model is dependent of neighbours, it is a lot less noisy than the other models used in this assignment.}
+    \caption{The result of the classification using two principal components, two classes, the 8-neighbourhood structure and the same $\beta$:s for both classes. As the model is dependent of neighbours, it is a lot less noisy compared to the results of the other models tried in this assignment. It can also be seen that the classifier finds activity at parts of the brain which were indicated in Figure \ref{fig:mean} together with some curious checkerboard patterns found in the original data in Figure \ref{fig:intro:vis} which we can not explain.}
     \label{fig:mrf}
 \end{figure}
 
@@ -379,19 +405,6 @@ The results suggests that the rhyme-centre of the brain is found to be either in
 \url{http://www.maths.lth.se/matstat/kurser/fmsn20masm25//material_ht18/L12-1x3.pdf}
 \end{thebibliography}
 \pagebreak{}
-
-%\sexion{Appendix}
-%\begin{figure}[H]
-%  \centering
-  %\includegraphics[width=\linewidth]{../output/kmeans_1_2_1}
-%  \caption{testing}
-%  \label{fig:test}
-%\end{figure}
-
-
-%\subsection*{\textsc{Matlab} code}
-% \input{kod}
-
 
 \pagebreak{}
 \thispagestyle{empty}
