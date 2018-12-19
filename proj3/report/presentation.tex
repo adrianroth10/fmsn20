@@ -98,14 +98,13 @@
 \begin{frame}
   \frametitle{Using data directly VS Regression coefficients}
   \framesubtitle{}
-  
-% Images of components...  
-%\begin{figure}
-%\centering
-%\includegraphics[width=\textwidth]{}
-%    \caption*{}
-%    \label{fig:}  
-%\end{figure}
+ 
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{../output/x}
+    \caption*{}
+    \label{fig:x}  
+\end{figure}
 
 \end{frame}
 
@@ -113,7 +112,6 @@
   \frametitle{"Mean activity"}
   \framesubtitle{}
   
-
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{../output/meanactivity}
@@ -183,40 +181,140 @@
   \begin{block}{}
   \begin{itemize}
     \item Number of classes
-    \item Number of covariate images
+    \item Number of components
     \item Different $\beta$:s for different classes
     \item Different neighbourhood structures
   \end{itemize}
   \end{block}
 
-
-
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Different Metropolis Hastings $\sigma^2$ for different neighbourhood structures}
+  \framesubtitle{}
+
+\begin{table}
+  \centering
+  \begin{tabular}{c c c |}
+%  	\multicolumn{3}{c}{4-Neighbourhood}
+%    \hline
+    \input{../output/mhsigman1.tex}
+  \end{tabular}
+    \begin{tabular}{c c c}
+%    \multicolumn{3}{c}{8-Neighbourhood} 
+%    \hline    
+    \input{../output/mhsigman2.tex}
+  \end{tabular}
+  \caption*{}
+  \label{tab:sigma:n1}
+\end{table}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Good $\alpha$ \& $\beta$:s}
+  \framesubtitle{Two components, two classes, 8-neighbourhood structure, single $\beta$.}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth]{../output/mrf_alpha_12_2_2_1}
+\includegraphics[width=0.49\textwidth]{../output/mrf_beta_12_2_2_1}
+    \caption*{}
+    \label{fig:alphabeta}  
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Good $\alpha$ \& $\beta$:s}
+  \framesubtitle{Two components, two classes, 8-neighbourhood structure, single $\beta$.}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{../output/mrf_12_2_2_1}
+    \caption*{}
+    \label{fig:mrf}  
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Good $\alpha$ \& $\beta$:s}
+  \framesubtitle{Two components, two classes, 8-neighbourhood structure, single $\beta$.}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{../output/mrf_plog_12_2_2_1}
+    \caption*{}
+    \label{fig:plog}  
+\end{figure}
+\end{frame}
 
 
 
 \begin{frame}
-  \frametitle{References}
-  \framesubtitle{}
-  \begin{thebibliography}{10}
+  \frametitle{"Bad" $\alpha$ \& $\beta$:s}
+  \framesubtitle{Four components, four classes, 4-neighbourhood structure, different $\beta$.}
 
-  \beamertemplatearticlebibitems
-  
-  \bibitem{hand} 
-   Handledare Andreas Jansson, ESS
-  
-  \bibitem{cern}
-    CERN Document Server
-    \newblock {\tt https://cds.cern.ch/}
+\begin{figure}
+\centering
+\includegraphics[width=0.49\textwidth]{../output/mrf_alpha_1234_4_1_0}
+\includegraphics[width=0.49\textwidth]{../output/mrf_beta_1234_4_1_0}
+    \caption*{}
+    \label{fig:alphabeta}  
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{"Bad" $\alpha$ \& $\beta$:s}
+  \framesubtitle{Four components, four classes, 4-neighbourhood structure, different $\beta$.}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{../output/mrf_1234_4_1_0}
+    \caption*{}
+    \label{fig:mrf}  
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{"Bad" $\alpha$ \& $\beta$:s}
+  \framesubtitle{Four components, four classes, 4-neighbourhood structure, different $\beta$.}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{../output/mrf_plog_1234_4_1_0}
+    \caption*{}
+    \label{fig:mrf}  
+\end{figure}
+\end{frame}
 
 
-  \end{thebibliography}
+
+\begin{frame}
+\begin{figure}[h]
+\centering
+
+\begin{minipage}{1.0\textwidth}
+\centering
+%\includegraphics[width=0.3\linewidth, height=0.15\textheight]{prob1_6_2}
+%\caption{$dt=0.1$}
+%\label{fig:prob1_6_2}
+\end{minipage}
+
+\begin{minipage}{1.0\textwidth}
+\centering
+\includegraphics[width=0.7\linewidth]{../output/mrf_12_2_2_1}
+\caption*{}
+\label{fig:brain}
+\end{minipage}
+
+\end{figure}
 \end{frame}
 
 \frame{
   \vspace{2cm}
+
   {\huge Questions?}
 
   \vspace{3cm}
