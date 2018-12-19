@@ -37,8 +37,8 @@
 }
 
 \title{Classification of fMRI data}
-\subtitle{using MRFs and Gibbs (MCMC)}
-\author{Anna Svensson, Adrian Roth}
+\subtitle{using DMRFs and Gibbs sampling (MCMC)}
+\author{Anna Svensson \& Adrian Roth}
 %\date{December 2016}
 
 \begin{document}
@@ -49,22 +49,22 @@
 \begin{frame}
   \frametitle{fMRI data}
   %\tableofcontents[hidesubsections]
-  
+
   \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{../output/visualize1}
     \caption*{}
-    \label{fig:vis}  
+    \label{fig:vis}
 \end{figure}
 \end{frame}
 
 
 \AtBeginSection[]
 {  \frame<handout:0>
-  {\frametitle{Översikt}   \tableofcontents[currentsection,hideallsubsections]}}
+  {\frametitle{Outline}   \tableofcontents[currentsection,hideallsubsections]}}
 \AtBeginSubsection[]
 {  \frame<handout:0>
-  {\frametitle{Översikt}
+  {\frametitle{Outline}
     \tableofcontents[sectionstyle=show/hide,subsectionstyle=show/shaded/hide]}}
 \newcommand<>{\highlighton}[1]{%
   \alt#2{\structure{#1}}{{#1}}
@@ -83,8 +83,8 @@
 \begin{frame}
   \frametitle{Models}
   \framesubtitle{}
-  
-  
+
+
   \begin{block}{}
   \begin{itemize}
     \item K-means
@@ -98,12 +98,12 @@
 \begin{frame}
   \frametitle{Using data directly VS Regression coefficients}
   \framesubtitle{}
- 
+
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{../output/x}
     \caption*{}
-    \label{fig:x}  
+    \label{fig:x}
 \end{figure}
 
 \end{frame}
@@ -111,12 +111,12 @@
 \begin{frame}
   \frametitle{"Mean activity"}
   \framesubtitle{}
-  
+
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../output/meanactivity}
+\includegraphics[width=0.7\textwidth]{../output/meanactivity}
     \caption*{}
-    \label{fig:mean}  
+    \label{fig:mean}
 \end{figure}
 
 \end{frame}
@@ -129,8 +129,8 @@
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{../output/kmeans_1_3}
-    \caption*{}
-    \label{fig:kmeams}  
+  \caption*{1 component, 3 different classes}
+    \label{fig:kmeams}
 \end{figure}
 \end{frame}
 
@@ -142,8 +142,8 @@
 \centering
 \includegraphics[width=0.49\textwidth]{../output/kmeans_12345_7}
 \includegraphics[width=0.49\textwidth]{../output/kmeans_12_4}
-    \caption*{}
-    \label{fig:kmeams2}  
+\caption*{Left 5 components, 7 classes. Right 2 components and 4 classes.}
+    \label{fig:kmeams2}
 \end{figure}
 \end{frame}
 
@@ -154,9 +154,9 @@
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../output/gmm_1_6}
-    \caption*{}
-    \label{fig:gmm}  
+\includegraphics[width=\textwidth]{../output/gmm_1_3}
+  \caption*{1 component, 3 different classes}
+    \label{fig:gmm}
 \end{figure}
 \end{frame}
 
@@ -168,8 +168,8 @@
 \centering
 \includegraphics[width=0.49\textwidth]{../output/gmm_12_7}
 \includegraphics[width=0.49\textwidth]{../output/gmm_123_4}
-    \caption*{}
-    \label{fig:gmm2}  
+\caption*{Left 2 components, 6 classes. Right 3 components and 4 classes.}
+    \label{fig:gmm2}
 \end{figure}
 \end{frame}
 
@@ -202,8 +202,8 @@
     \input{../output/mhsigman1.tex}
   \end{tabular}
     \begin{tabular}{c c c}
-%    \multicolumn{3}{c}{8-Neighbourhood} 
-%    \hline    
+%    \multicolumn{3}{c}{8-Neighbourhood}
+%    \hline
     \input{../output/mhsigman2.tex}
   \end{tabular}
   \caption*{}
@@ -221,7 +221,7 @@
 \includegraphics[width=0.49\textwidth]{../output/mrf_alpha_12_2_2_1}
 \includegraphics[width=0.49\textwidth]{../output/mrf_beta_12_2_2_1}
     \caption*{}
-    \label{fig:alphabeta}  
+    \label{fig:alphabeta}
 \end{figure}
 \end{frame}
 
@@ -233,7 +233,7 @@
 \centering
 \includegraphics[width=0.7\textwidth]{../output/mrf_12_2_2_1}
     \caption*{}
-    \label{fig:mrf}  
+    \label{fig:mrf}
 \end{figure}
 \end{frame}
 
@@ -246,7 +246,7 @@
 \centering
 \includegraphics[width=0.7\textwidth]{../output/mrf_plog_12_2_2_1}
     \caption*{}
-    \label{fig:plog}  
+    \label{fig:plog}
 \end{figure}
 \end{frame}
 
@@ -261,7 +261,7 @@
 \includegraphics[width=0.49\textwidth]{../output/mrf_alpha_1234_4_1_0}
 \includegraphics[width=0.49\textwidth]{../output/mrf_beta_1234_4_1_0}
     \caption*{}
-    \label{fig:alphabeta}  
+    \label{fig:alphabeta}
 \end{figure}
 \end{frame}
 
@@ -273,7 +273,7 @@
 \centering
 \includegraphics[width=0.7\textwidth]{../output/mrf_1234_4_1_0}
     \caption*{}
-    \label{fig:mrf}  
+    \label{fig:mrf}
 \end{figure}
 \end{frame}
 
@@ -285,7 +285,7 @@
 \centering
 \includegraphics[width=0.7\textwidth]{../output/mrf_plog_1234_4_1_0}
     \caption*{}
-    \label{fig:mrf}  
+    \label{fig:mrf}
 \end{figure}
 \end{frame}
 
